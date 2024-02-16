@@ -1,3 +1,7 @@
+import '../pages/index.css' // добавьте импорт главного файла стилей
+import { initialCards } from './cards.js'; 
+
+
 // Темплейт карточки
 const cardTemplate = document.querySelector('#card-template').content;
 
@@ -20,7 +24,15 @@ function addCard(src, alt, deleteCardFunc) {
 
 // Функция удаления карточки
 function deleteCardFunc(evt) {
-    evt.target.parentElement.remove();
+    // evt.currentTarget.parentElement.remove();
+    // или
+    // evt.target.parentElement.remove();
+    // или
+    evt.target.closest('.places__item').remove();
+    // console.log('evt.currentTarget - ' + evt.currentTarget);
+    // console.log('evt.taget - ' + evt.taget);
+    // evt.currentTarget.parentElement.remove();
+
 }
 
 // Вывести карточки из массива initialCards на страницу
