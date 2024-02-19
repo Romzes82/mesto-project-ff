@@ -39,3 +39,44 @@ function deleteCardFunc(evt) {
 initialCards.forEach(element => {
     placesList.append(addCard(element.link, element.name, deleteCardFunc));
 });
+
+//===================================
+
+const popupTypeEdit = document.querySelector('.popup_type_edit');
+const popupTypeNewCard = document.querySelector('.popup_type_new-card');
+// popup_type_new-card
+// console.log(popupTypeEdit);
+// console.log(popupTypeEdit.classList);
+// popupTypeEdit.classList.add('popup_is-opened');
+
+//слушатель на кнопку открытия редактирования попапа
+const profileEditButton = document.querySelector('.profile__edit-button');
+profileEditButton.addEventListener('click', function () {
+    popupTypeEdit.classList.add('popup_is-opened');
+    onceOpenPopup();
+});
+
+function onceOpenPopup() {
+    // console.log();
+    document.querySelector('.popup_type_edit .popup__content .popup__close').addEventListener('click', function() {
+        popupTypeEdit.classList.remove('popup_is-opened');
+    })
+}
+
+//слушатель на кнопку добавления профиля
+const profileAddButton = document.querySelector('.profile__add-button');
+profileAddButton.addEventListener('click', function () {
+    popupTypeNewCard.classList.add('popup_is-opened');
+    onceOpenPopup_1();
+});
+
+
+function onceOpenPopup_1() {
+    console.log("asadd");
+    document.querySelector('.popup_type_new-card .popup__content .popup__close').addEventListener('click', function() {
+        popupTypeNewCard.classList.remove('popup_is-opened');   
+    })
+}
+
+// в popup popup_type_image popup_is-opened надо параметром передавать src картинки, который будет 
+//браться из таргет при клике на самой картике
