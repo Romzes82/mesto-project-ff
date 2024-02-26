@@ -17,7 +17,7 @@ module.exports = {
         static: path.resolve(__dirname, './dist'), // путь, куда "смотрит" режим разработчика
         compress: true, // это ускорит загрузку в режиме разработки
         port: 8080, // порт, чтобы открывать сайт по адресу localhost:8080, но можно поменять порт
-        open: true // сайт будет открываться сам при запуске npm run dev
+        open: 'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe' // сайт будет открываться сам при запуске npm run dev
     },
     module: {
         rules: [ // rules — это массив правил
@@ -34,7 +34,7 @@ module.exports = {
             // добавили правило для обработки файлов
             {
                 // регулярное выражение, которое ищет все файлы с такими расширениями
-                test: /\.(png|svg|jpg|gif|woff(2)?|eot|ttf|otf)$/,
+                test: /\.(png|ico|svg|jpg|gif|woff(2)?|eot|ttf|otf)$/,
                 type: 'asset/resource'
             },
             // добавьте ещё одно правило:

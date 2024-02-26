@@ -44,7 +44,16 @@ initialCards.forEach(element => {
 
 //===================================
 
+// window.addEventListener('click', function (e) {
+
+//     const target = e.target;
+//     console.log(target)
+
+// });
+
+// DOM узлы попапов
 const popupTypeEdit = document.querySelector('.popup_type_edit');
+// const formEditProfile = document.forms['edit-profile'];
 const popupTypeNewCard = document.querySelector('.popup_type_new-card');
 // popup_type_new-card
 // console.log(popupTypeEdit);
@@ -53,30 +62,59 @@ const popupTypeNewCard = document.querySelector('.popup_type_new-card');
 
 //слушатель на кнопку открытия редактирования попапа
 const profileEditButton = document.querySelector('.profile__edit-button');
+//слушатель на кнопку добавления профиля
+const profileAddButton = document.querySelector('.profile__add-button');
 
+//добавляем слушателя на кнопку edit
 profileEditButton.addEventListener('click', function () {
-    // popupTypeEdit.classList.add('popup_is-opened');
-    popupTypeEdit.classList.toggle('popup_is-opened');
-    onceOpenPopup();
+    popupTypeEdit.classList.add('popup_is-opened');
+    onceOpenPopup(popupTypeEdit);
 });
 
-function onceOpenPopup() {
-    // console.log();
-    document.querySelector('.popup_type_edit .popup__content .popup__close').addEventListener('click', function(e) {
-        console.log(e.target.parentElement.parentElement.classList);
-        const thisEvtClass = e.target.classList.value
-        popupTypeEdit.classList.remove('popup_is-opened');
-        // popupTypeEdit.classList.toggle('popup_is-opened');
-        // popupTypeEdit.classList.remove(thisEvtClass);
+//добавляем слушателя на кнопку добавления карточки
+profileAddButton.addEventListener('click', function () {
+    popupTypeNewCard.classList.add('popup_is-opened');
+    onceOpenPopup(popupTypeNewCard);
+});
+
+// вешаем слушателя на крестик сабмит и оверлей функцию колбэк, которая будет вызываться при клике на них
+// при открытии попапа надо вешать эти слушатели
+// а при закрытии попапа надо удалять эти слушатели
+
+// function addClassPopupIsOpened(evt) { 
+//     popupTypeEdit.classList.add('popup_is-opened');
+//     onceOpenPopup(popupTypeEdit);
+// }
+
+function onceOpenPopup(elem) {
+    //  console.log(e.currentTarget);
+        
+    // document.querySelector('.popup_type_edit .popup__content .popup__close').addEventListener('click', function() {
+    // elem.querySelector('.popup__close').addEventListener('click', function (evt) {
+    elem.addEventListener('click', function (evt) {
+
+        // console.log(evt.target.classList.value);
+        console.log(elem.classList.value);
+
+        if (evt.target.classList.contains('popup__close') || evt.target.classList.contains('popup__button') || evt.target.classList.value === elem.classList.value) {
+            console.log(evt.currentTarget);
+            elem.classList.remove('popup_is-opened');
+        }
     })
 }
 
-//слушатель на кнопку добавления профиля
-const profileAddButton = document.querySelector('.profile__add-button');
-profileAddButton.addEventListener('click', function () {
-    popupTypeNewCard.classList.add('popup_is-opened');
-    onceOpenPopup_1();
-});
+// function removeClassPoppupIsOpened(evt) { 
+//     console.log(elem.classList.value);
+
+//     if (evt.target.classList.contains('popup__close') || evt.target.classList.contains('popup__button') || evt.target.classList.value === elem.classList.value) {
+//         console.log(evt.currentTarget);
+//         elem.classList.remove('popup_is-opened');
+//     }
+// }
+
+
+
+
 
 
 function onceOpenPopup_1() {
