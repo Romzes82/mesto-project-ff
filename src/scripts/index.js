@@ -60,24 +60,48 @@ const popupTypeNewCard = document.querySelector('.popup_type_new-card');
 // console.log(popupTypeEdit.classList);
 // popupTypeEdit.classList.add('popup_is-opened');
 
-//слушатель на кнопку открытия редактирования попапа
+//дом узел кнопки открытия редактирования попапа
 const profileEditButton = document.querySelector('.profile__edit-button');
-//слушатель на кнопку добавления профиля
+//дом узел кнопки добавления профиля
 const profileAddButton = document.querySelector('.profile__add-button');
 
 //добавляем слушателя на кнопку edit
 profileEditButton.addEventListener('click', function () {
     popupTypeEdit.classList.add('popup_is-opened');
-    onceOpenPopup(popupTypeEdit);
+    popupTypeEdit.addEventListener('click', removeClassPoppupIsOpened);
+    // onceOpenPopup(popupTypeEdit);
 });
 
 //добавляем слушателя на кнопку добавления карточки
 profileAddButton.addEventListener('click', function () {
     popupTypeNewCard.classList.add('popup_is-opened');
-    onceOpenPopup(popupTypeNewCard);
+    popupTypeNewCard.addEventListener('click', removeClassPoppupIsOpened);
+    // onceOpenPopup(popupTypeNewCard);
 });
 
-// вешаем слушателя на крестик сабмит и оверлей функцию колбэк, которая будет вызываться при клике на них
+function removeClassPoppupIsOpened(evt) { 
+    console.log(evt.target.classList.value);
+    // popup popup_type_edit popup_is-opened
+    //|| evt.target.classList.value === elem.classList.value
+    // evt.target.classList.contains('popup_is-opened')
+    // || evt.target.classList.value === 'popup popup_type_edit popup_is-opened' || evt.target.classList.value === 'popup popup_type_new-card popup_is-opened'
+
+    if (evt.target.classList.contains('popup__close')
+        || evt.target.classList.contains('popup__button')
+        || evt.target.classList.contains('popup_is-opened')) {
+        // console.log(evt.currentTarget);
+        // console.log(evt.target.classList.value);
+        evt.currentTarget.classList.remove('popup_is-opened');
+        popupTypeEdit.removeEventListener('click', removeClassPoppupIsOpened);
+    }
+}
+
+// до сюда работает КРУТЬ
+
+
+
+
+// вешаем слушателя события click на крестик сабмит и оверлей функцию колбэк, которая будет вызываться при клике на них
 // при открытии попапа надо вешать эти слушатели
 // а при закрытии попапа надо удалять эти слушатели
 
