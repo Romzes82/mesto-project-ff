@@ -57,7 +57,11 @@ placesList.addEventListener('click', function (evt) {
         popImg.src = evt.target.src;
         console.log(evt.target);
         // для событий (клика по картинке) добавим слушателя событий (ф-ю колбэк удаления класса '.popup_is - opened')
-        popupTypeImage.addEventListener('click', removeClassPoppupIsOpened_forImage);        
+        popupTypeImage.addEventListener('click', removeClassPoppupIsOpened_forImage);  
+        // popupTypeImage.addEventListener('keydown', hidePopupByEsc);      
+        // popupTypeImage.addEventListener('keydown', function () {
+        //     console.log('Я возникаю, когда печатают в текстовом поле.');
+        // });
     }
 });
 
@@ -81,14 +85,24 @@ profileEditButton.addEventListener('click', function () {
     nameInput.value = nameInputContent.textContent;
     jobInput.value = jobInputContent.textContent;
     popupTypeEdit.classList.add('popup_is-opened');
+    // popupTypeEdit.classList.add('popup_is-opened');
+    console.log(popupTypeEdit);
+    // console.log(document.getElementsByName('name')[0].focus());
+    // popupTypeEdit.focus();
+    // popup__input popup__input_type_name
     popupTypeEdit.addEventListener('click', removeClassPoppupIsOpened);
-    // onceOpenPopup(popupTypeEdit);
+    //--------- popupTypeEdit.addEventListener('keydown', hidePopupByEsc); // removeClassPoppupIsOpenedByEsc
+    // onceOpenPopup(popupTypeEdit); 
+    
 });
+
+// document.addEventListener('keydown', hidePopupByEsc); 
 
 //добавляем слушателя на кнопку добавления карточки
 profileAddButton.addEventListener('click', function () {
     popupTypeNewCard.classList.add('popup_is-opened');
     popupTypeNewCard.addEventListener('click', removeClassPoppupIsOpened_forNewCard);
+    // -------- popupTypeNewCard.addEventListener('keydown', hidePopupByEsc);
     // onceOpenPopup(popupTypeNewCard);
 });
 
@@ -241,3 +255,36 @@ function handleFormSubmit_newCard(evt) {
 }
 
 formElement_newCard.addEventListener('submit', handleFormSubmit_newCard);
+
+// popupTypeEdit.addEventListener('keydown', function (evt) {
+//     console.log(evt.keyCode);
+//     // Проверяем, была ли введена цифра
+//     if (evt.keyCode == 27) {
+//         // Если пользователь ввёл не цифру, показываем блок с ошибкой
+//         // error.style.display = 'block';
+//         evt.currentTarget.classList.remove('popup_is-opened');
+//     };
+// }); 
+
+function hidePopupByEsc(evt) { 
+    console.log('from hidePopupByEsc');
+    console.log(evt.key);
+    console.log(evt.currentTarget);
+    if (evt.key === 'Escape') {
+        // evt.currentTarget.classList.remove('popup_is-opened');
+        popupTypeEdit.classList.remove('popup_is-opened');
+    };
+}
+
+document.addEventListener('keydown', function (evt) {
+    console.log('Я возникаю, когда печатают в текстовом поле.');
+    console.log(evt.key);
+    console.log(popupTypeImage);
+    console.log(popupTypeImage.classList.contains('popup_is-opened'));
+
+    if (evt.key === "Escape" && popupTypeImage.classList.contains('popup_is-opened')) {
+        popupTypeImage.classList.remove('popup_is-opened');
+            // popupTypeEdit.removeEventListener('keydown', hidePopupByEsc);
+            // popupTypeNewCard.removeEventListener('keydown', hidePopupByEsc);
+        };
+});
