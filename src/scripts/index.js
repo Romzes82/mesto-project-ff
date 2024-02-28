@@ -9,7 +9,16 @@ import { initialCards } from './cards.js';
 
 // DOM узлы
 const placesList = document.querySelector('.places__list');
-
+// DOM узел попапа edit
+const popupTypeEdit = document.querySelector('.popup_type_edit');
+// DOM узел попапа добавления карточки
+const popupTypeNewCard = document.querySelector('.popup_type_new-card');
+// DOM узел попапа с картинкой из карточки
+const popupTypeImage = document.querySelector('.popup_type_image');
+//дом узел кнопки открытия редактирования попапа
+const profileEditButton = document.querySelector('.profile__edit-button');
+//дом узел кнопки добавления профиля
+const profileAddButton = document.querySelector('.profile__add-button');
 
 // Вывести карточки из массива initialCards на страницу
 initialCards.forEach(element => {
@@ -25,12 +34,7 @@ initialCards.forEach(element => {
 
 // });
 
-// DOM узел попапа edit
-const popupTypeEdit = document.querySelector('.popup_type_edit');
-// DOM узел попапа добавления карточки
-const popupTypeNewCard = document.querySelector('.popup_type_new-card');
-// DOM узел попапа с картинкой из карточки
-const popupTypeImage = document.querySelector('.popup_type_image');
+
 
 
 // DOM узел списка карточек с картинками
@@ -41,10 +45,7 @@ const popupTypeImage = document.querySelector('.popup_type_image');
 // console.log(popupTypeEdit.classList);
 // popupTypeEdit.classList.add('popup_is-opened');
 
-//дом узел кнопки открытия редактирования попапа
-const profileEditButton = document.querySelector('.profile__edit-button');
-//дом узел кнопки добавления профиля
-const profileAddButton = document.querySelector('.profile__add-button');
+
 
 //добавляем слушателя на картинку в карточке по всему списку
 placesList.addEventListener('click', function (evt) {
@@ -58,6 +59,7 @@ placesList.addEventListener('click', function (evt) {
         console.log(evt.target);
         // для событий (клика по картинке) добавим слушателя событий (ф-ю колбэк удаления класса '.popup_is - opened')
         popupTypeImage.addEventListener('click', removeClassPoppupIsOpened_forImage);  
+        hidePopupByEsc(popupTypeImage);
         // popupTypeImage.addEventListener('keydown', hidePopupByEsc);      
         // popupTypeImage.addEventListener('keydown', function () {
         //     console.log('Я возникаю, когда печатают в текстовом поле.');
@@ -91,6 +93,8 @@ profileEditButton.addEventListener('click', function () {
     // popupTypeEdit.focus();
     // popup__input popup__input_type_name
     popupTypeEdit.addEventListener('click', removeClassPoppupIsOpened);
+    // document.addEventListener('keydown', hidePopupByEsc);
+    hidePopupByEsc(popupTypeEdit);
     //--------- popupTypeEdit.addEventListener('keydown', hidePopupByEsc); // removeClassPoppupIsOpenedByEsc
     // onceOpenPopup(popupTypeEdit); 
     
@@ -102,6 +106,7 @@ profileEditButton.addEventListener('click', function () {
 profileAddButton.addEventListener('click', function () {
     popupTypeNewCard.classList.add('popup_is-opened');
     popupTypeNewCard.addEventListener('click', removeClassPoppupIsOpened_forNewCard);
+    hidePopupByEsc(popupTypeNewCard);
     // -------- popupTypeNewCard.addEventListener('keydown', hidePopupByEsc);
     // onceOpenPopup(popupTypeNewCard);
 });
@@ -256,35 +261,23 @@ function handleFormSubmit_newCard(evt) {
 
 formElement_newCard.addEventListener('submit', handleFormSubmit_newCard);
 
-// popupTypeEdit.addEventListener('keydown', function (evt) {
-//     console.log(evt.keyCode);
-//     // Проверяем, была ли введена цифра
-//     if (evt.keyCode == 27) {
-//         // Если пользователь ввёл не цифру, показываем блок с ошибкой
-//         // error.style.display = 'block';
-//         evt.currentTarget.classList.remove('popup_is-opened');
-//     };
-// }); 
 
-function hidePopupByEsc(evt) { 
-    console.log('from hidePopupByEsc');
-    console.log(evt.key);
-    console.log(evt.currentTarget);
-    if (evt.key === 'Escape') {
-        // evt.currentTarget.classList.remove('popup_is-opened');
-        popupTypeEdit.classList.remove('popup_is-opened');
-    };
+function hidePopupByEsc(el) {
+    console.log('in hidePopupByEsc');
+    console.log(el);
+    document.addEventListener('keydown', innerHidePopupByEsc);
+    
+    function innerHidePopupByEsc(evt) {
+        console.log('Я возникаю, когда печатают в текстовом поле.');
+        console.log(evt.key);
+        if (evt.key === "Escape") {
+            console.log(el);
+            el.classList.remove('popup_is-opened');
+            document.removeEventListener('keydown', innerHidePopupByEsc);
+        };
+    }
 }
 
-document.addEventListener('keydown', function (evt) {
-    console.log('Я возникаю, когда печатают в текстовом поле.');
-    console.log(evt.key);
-    console.log(popupTypeImage);
-    console.log(popupTypeImage.classList.contains('popup_is-opened'));
 
-    if (evt.key === "Escape" && popupTypeImage.classList.contains('popup_is-opened')) {
-        popupTypeImage.classList.remove('popup_is-opened');
-            // popupTypeEdit.removeEventListener('keydown', hidePopupByEsc);
-            // popupTypeNewCard.removeEventListener('keydown', hidePopupByEsc);
-        };
-});
+
+
