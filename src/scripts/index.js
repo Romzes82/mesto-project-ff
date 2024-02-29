@@ -58,7 +58,7 @@ formElement_newCard.addEventListener('submit', handleFormSubmit_newCard);
 // Обработчик «отправки» формы, хотя пока она никуда отправляться не будет
 function handleFormSubmit_editProfile(evt) {
     evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
-    // Зафиксируем текстовое содержимое элементов заголовка и параграфа из полей формы
+    // Зафиксируем текстовое содержимое в элементы заголовка и параграфа страницы из полей формы
     nameInputContent.textContent = nameInput.value;
     jobInputContent.textContent = jobInput.value;
     closeModal(popupTypeEdit);
