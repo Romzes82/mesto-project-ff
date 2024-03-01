@@ -81,9 +81,15 @@ function handleFormSubmitEditProfile(evt) {
     closeModal(popupTypeEdit);
 }
 
+// установим максимум символов для полей ввода 
+formElement_newCard['place-name'].setAttribute('maxlength', '15');
+formElement_editProfile['name'].setAttribute('maxlength', '20');
+formElement_editProfile['description'].setAttribute('maxlength', '45');
+
 // Обработчик «отправки» формы, хотя пока она никуда отправляться не будет
 function handleFormSubmitNewCard(evt) {
     evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
+
     const obj = {
         name: evt.currentTarget['place-name'].value,
         link: evt.currentTarget.link.value
