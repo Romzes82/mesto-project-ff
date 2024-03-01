@@ -46,7 +46,18 @@ printLog(mobileWidthMediaQuery.matches);
 
 mobileWidthMediaQuery.addEventListener('change', function (event) {
     printLog(event.matches)
-})
+});
+
+function imageExists(image_url) {
+    let http = new XMLHttpRequest();
+    http.open('HEAD', image_url, false);
+    http.send();
+    return http.status != 404;
+}
+
+
+
+
 
 // функция открывающая попап с картинкой карточки, на которой был клик. Она передается в качестве аргумента в ф-цию addCard
 function clickCardImageFunc(evt) { 
@@ -89,14 +100,28 @@ formElement_editProfile['description'].setAttribute('maxlength', '45');
 // Обработчик «отправки» формы, хотя пока она никуда отправляться не будет
 function handleFormSubmitNewCard(evt) {
     evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
+    formElement_newCard['link'].setCustomValidity('');
 
     const obj = {
         name: evt.currentTarget['place-name'].value,
         link: evt.currentTarget.link.value
     }
-    placesList.prepend(addCard(obj.link, obj.name, deleteCardFunc, likeCardFunc, clickCardImageFunc));
-    evt.currentTarget.reset();
-    closeModal(popupTypeNewCard);
+
+    if (imageExists(obj.link)) {
+        console.log('ok');
+        console.log(obj.link);
+        placesList.prepend(addCard(obj.link, obj.name, deleteCardFunc, likeCardFunc, clickCardImageFunc));
+        evt.currentTarget.reset();
+        closeModal(popupTypeNewCard);
+        formElement_newCard['link'].setCustomValidity('');
+    } else { 
+        console.log('err');
+        console.log(obj.link);
+        console.log(formElement_newCard['link'].validity);
+
+        formElement_newCard['link'].setCustomValidity("По данному URL картинки нет");
+        // formElement_newCard['link'].reportValidity();
+    }   
 }
 
 // Вывести карточки из массива initialCards на страницу
