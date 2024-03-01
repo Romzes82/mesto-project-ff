@@ -48,22 +48,12 @@ mobileWidthMediaQuery.addEventListener('change', function (event) {
     printLog(event.matches)
 });
 
+//функция проверяющая есть ли по ссылке изображение
 function imageExists(image_url) {
     let http = new XMLHttpRequest();
     http.open('HEAD', image_url, false);
     http.send();
     return http.status != 404;
-}
-
-
-
-
-
-// функция открывающая попап с картинкой карточки, на которой был клик. Она передается в качестве аргумента в ф-цию addCard
-function clickCardImageFunc(evt) { 
-    openModal(popupTypeImage);
-    popupImg.src = evt.target.src;
-    popupImg.alt = evt.target.alt;
 }
 
 //добавляем слушателя на кнопку edit
@@ -92,35 +82,36 @@ function handleFormSubmitEditProfile(evt) {
     closeModal(popupTypeEdit);
 }
 
-// установим максимум символов для полей ввода 
+// установим максимум символов для полей ввода форм
 formElement_newCard['place-name'].setAttribute('maxlength', '15');
-formElement_editProfile['name'].setAttribute('maxlength', '20');
+formElement_editProfile['name'].setAttribute('maxlength', '15');
 formElement_editProfile['description'].setAttribute('maxlength', '45');
+
+// функция открывающая попап с картинкой карточки, на которой был клик. Она передается в качестве аргумента в ф-цию addCard
+function clickCardImageFunc(evt) { 
+    openModal(popupTypeImage);
+    popupImg.src = evt.target.src;
+    popupImg.alt = evt.target.alt;
+}
 
 // Обработчик «отправки» формы, хотя пока она никуда отправляться не будет
 function handleFormSubmitNewCard(evt) {
     evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
     formElement_newCard['link'].setCustomValidity('');
 
-    const obj = {
-        name: evt.currentTarget['place-name'].value,
-        link: evt.currentTarget.link.value
-    }
+    //вешаем слушатель на изменение поля link, чтоб обнулять кастомную ошибку об отсутсвии изображения по ссылке
+    formElement_newCard['link'].addEventListener('change', ()=> {
+        formElement_newCard['link'].setCustomValidity('');
+    })
 
-    if (imageExists(obj.link)) {
-        console.log('ok');
-        console.log(obj.link);
-        placesList.prepend(addCard(obj.link, obj.name, deleteCardFunc, likeCardFunc, clickCardImageFunc));
+    //прежде, чем добавлять новую карточку на страницу, проверим есть ли по ссылке изобажение
+    if (imageExists(evt.currentTarget.link.value)) {
+        placesList.prepend(addCard(evt.currentTarget.link.value, evt.currentTarget['place-name'].value, deleteCardFunc, likeCardFunc, clickCardImageFunc));
         evt.currentTarget.reset();
         closeModal(popupTypeNewCard);
-        formElement_newCard['link'].setCustomValidity('');
     } else { 
-        console.log('err');
-        console.log(obj.link);
-        console.log(formElement_newCard['link'].validity);
-
         formElement_newCard['link'].setCustomValidity("По данному URL картинки нет");
-        // formElement_newCard['link'].reportValidity();
+        formElement_newCard['link'].reportValidity(); //подсветить в поле инпута ошибку
     }   
 }
 
