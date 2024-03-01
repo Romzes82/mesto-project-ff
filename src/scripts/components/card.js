@@ -2,16 +2,16 @@
 const cardTemplate = document.querySelector('#card-template').content;
 
 // Функция создания карточки
-export function addCard(src, alt, deleteCardFunc, likeCardFunc, clickCardImageFunc) {
+export function addCard(link, name, deleteCardFunc, likeCardFunc, clickCardImageFunc) {
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
-
+    const cardImage = cardElement.querySelector('.card__image');
     // наполняем содержимым
-    cardElement.querySelector('.card__image').src = src;
-    cardElement.querySelector('.card__image').alt = alt;
+    cardImage.src = link;
+    cardImage.alt = name;
     cardElement.querySelector('.card__delete-button').addEventListener('click', deleteCardFunc);
     cardElement.querySelector('.card__like-button').addEventListener('click', likeCardFunc);
-    cardElement.querySelector('.card__image').addEventListener('click', clickCardImageFunc); 
-    cardElement.querySelector('.card__title').textContent = alt;
+    cardImage.addEventListener('click', clickCardImageFunc);
+    cardElement.querySelector('.card__title').textContent = name;
 
     // возвращаем DOM-элемент созданной карточки
     return cardElement;
