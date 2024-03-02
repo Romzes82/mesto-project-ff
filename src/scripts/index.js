@@ -25,36 +25,8 @@ const jobInput = formElement_editProfile.querySelector('.popup__input_type_descr
 const nameInputContent = document.querySelector('.profile__title');
 // Находим DOM-элемент параграф profile__description
 const jobInputContent = document.querySelector('.profile__description');
-// Находим DOM-элемент попапа с картинкой
+// Находим DOM-элемент img с классом popup__image попапа с картинкой
 const popupImg = popupTypeImage.querySelector('.popup__image');
-
-document.querySelector('.profile__info').setAttribute('style', 'grid-template-areas: "title button" "description .";');
-
-//строчку снизу можно закомментировать, тогда текстовое содержание парагрофа с классом "profile__description"
-//не будет обрезаться троеточием, а будет выравниваться в колонку шириной 295px-17px с последующим переносом на сл. строку
-document.querySelector('.profile__description').setAttribute('style', 'overflow: hidden; text-overflow: ellipsis; white-space: nowrap;');
-
-// Создадим медиавыражение с параметрами ширины и подпишемся на его изменение, для утсановки секции с классом .profile ширины,
-// равной ширине карточек в версии mobile (=< 480px)
-const mobileWidthMediaQuery = window.matchMedia('(max-width: 480px)');
-
-function printLog(isMobileSize) {
-    isMobileSize ? document.querySelector('.profile').style.width = '282px' : document.querySelector('.profile').style.width = '';
-}
-
-printLog(mobileWidthMediaQuery.matches);
-
-mobileWidthMediaQuery.addEventListener('change', function (event) {
-    printLog(event.matches)
-});
-
-//функция проверяющая есть ли по ссылке изображение
-function imageExists(image_url) {
-    let http = new XMLHttpRequest();
-    http.open('HEAD', image_url, false);
-    http.send();
-    return http.status != 404;
-}
 
 //добавляем слушателя на кнопку edit
 profileEditButton.addEventListener('click', () => {
@@ -82,37 +54,20 @@ function handleFormSubmitEditProfile(evt) {
     closeModal(popupTypeEdit);
 }
 
-// установим максимум символов для полей ввода форм
-formElement_newCard['place-name'].setAttribute('maxlength', '15');
-formElement_editProfile['name'].setAttribute('maxlength', '15');
-formElement_editProfile['description'].setAttribute('maxlength', '45');
-
 // функция открывающая попап с картинкой карточки, на которой был клик. Она передается в качестве аргумента в ф-цию addCard
 function clickCardImageFunc(evt) { 
-    openModal(popupTypeImage);
     popupImg.src = evt.target.src;
     popupImg.alt = evt.target.alt;
+    popupTypeImage.querySelector('.popup__caption').textContent = evt.target.alt;
+    openModal(popupTypeImage);
 }
 
 // Обработчик «отправки» формы, хотя пока она никуда отправляться не будет
 function handleFormSubmitNewCard(evt) {
     evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
-    formElement_newCard['link'].setCustomValidity('');
-
-    //вешаем слушатель на изменение поля link, чтоб обнулять кастомную ошибку об отсутсвии изображения по ссылке
-    formElement_newCard['link'].addEventListener('change', ()=> {
-        formElement_newCard['link'].setCustomValidity('');
-    })
-
-    //прежде, чем добавлять новую карточку на страницу, проверим есть ли по ссылке изобажение
-    if (imageExists(evt.currentTarget.link.value)) {
-        placesList.prepend(addCard(evt.currentTarget.link.value, evt.currentTarget['place-name'].value, deleteCardFunc, likeCardFunc, clickCardImageFunc));
-        evt.currentTarget.reset();
-        closeModal(popupTypeNewCard);
-    } else { 
-        formElement_newCard['link'].setCustomValidity("По данному URL картинки нет");
-        formElement_newCard['link'].reportValidity(); //подсветить в поле инпута ошибку
-    }   
+    placesList.prepend(addCard(evt.currentTarget.link.value, evt.currentTarget['place-name'].value, deleteCardFunc, likeCardFunc, clickCardImageFunc));
+    evt.currentTarget.reset();
+    closeModal(popupTypeNewCard);
 }
 
 // Вывести карточки из массива initialCards на страницу
