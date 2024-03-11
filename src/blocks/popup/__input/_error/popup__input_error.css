@@ -1,0 +1,4 @@
+.popup__input_error {
+  border-bottom: 2px solid rgba(255, 0, 0);
+  /* border-bottom-color: red; */
+}

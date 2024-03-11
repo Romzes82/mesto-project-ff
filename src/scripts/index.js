@@ -74,3 +74,43 @@ function handleFormSubmitNewCard(evt) {
 initialCards.forEach(element => {
     placesList.append(addCard(element.link, element.name, deleteCardFunc, likeCardFunc, clickCardImageFunc));
 });
+
+// ****************************************************************
+
+// Вынесем все необходимые элементы формы в константы
+// const formElement = document.querySelector('.form');
+// const formInput = formElement.querySelector('.form__input');
+
+// Выбираем элемент ошибки на основе уникального класса 
+const formError = nameInput.querySelector(`.${nameInput.id}-error`);
+
+// Функция, которая добавляет класс с ошибкой
+const showInputError = (element) => {
+    element.classList.add('popup__input_error');
+    // Показываем сообщение об ошибке
+    // formError.classList.add('form__input-error_active');
+};
+
+// Функция, которая удаляет класс с ошибкой
+const hideInputError = (element) => {
+    element.classList.remove('popup__input_error');
+    // Скрываем сообщение об ошибке
+    // formError.classList.remove('form__input-error_active');
+};
+
+// Функция, которая проверяет валидность поля
+const isValid = () => {
+    if (!nameInput.validity.valid) {
+        // Если поле не проходит валидацию, покажем ошибку
+        showInputError(nameInput);
+    } else {
+        // Если проходит, скроем
+        hideInputError(nameInput);
+    }
+};
+
+// Вызовем функцию isValid на каждый ввод символа
+nameInput.addEventListener('input', isValid); 
+
+console.log(nameInput.id); // "email-input" 
+
