@@ -1,0 +1,5 @@
+.popup__button_inactive {
+  /* ЭТО ДОРАБОТАТЬ   */
+  background: rgba(34, 247, 1, 0.548);
+  cursor: pointer;
+}
