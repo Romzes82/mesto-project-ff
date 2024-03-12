@@ -135,11 +135,8 @@ export const enableValidation = (validationConfig) => {
     });
 };
 
-// Вызовем функцию
-// enableValidation();
-
-// // включение валидации вызовом enableValidation
-// // все настройки validationConfig передаются при вызове
+// включение валидации вызовом enableValidation
+// все настройки validationConfig передаются при вызове
 
 export const clearValidation = (profileForm, validationConfig) => {
     console.log(profileForm);
