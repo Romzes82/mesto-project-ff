@@ -87,7 +87,7 @@ initialCards.forEach(element => {
 
 // // Функция, которая добавляет класс с ошибкой
 // const showInputError = (element, errorMessage) => {
-//     element.classList.add('popup__input_error');
+//     element.classList.add('popup__input_type_error');
 //     // Заменим содержимое span с ошибкой на переданный параметр
 //     formError.textContent = errorMessage;    
 //     // Показываем сообщение об ошибке
@@ -98,7 +98,7 @@ const showInputError = (formElement, inputElement, errorMessage) => {
     // Находим элемент ошибки внутри самой функции
     const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
     // Остальной код такой же
-    inputElement.classList.add('popup__input_error');
+    inputElement.classList.add('popup__input_type_error');
     errorElement.textContent = errorMessage;
     errorElement.classList.add('popup__error_visible');
 };
@@ -107,14 +107,14 @@ const hideInputError = (formElement, inputElement) => {
     // Находим элемент ошибки
     const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
     // Остальной код такой же
-    inputElement.classList.remove('popup__input_error');
+    inputElement.classList.remove('popup__input_type_error');
     errorElement.classList.remove('popup__error_visible');
     errorElement.textContent = '';
 }; 
 
 // Функция, которая удаляет класс с ошибкой
 // const hideInputError = (element) => {
-//     element.classList.remove('popup__input_error');
+//     element.classList.remove('popup__input_type_error');
 //     // Скрываем сообщение об ошибке
 //     formError.classList.remove('popup__error_visible');
 //     // Очистим ошибку
@@ -185,13 +185,11 @@ const toggleButtonState = (inputList, buttonElement) => {
     if (hasInvalidInput(inputList)) {
         // сделай кнопку неактивной
         buttonElement.disabled = true;
-        // доработать
-        buttonElement.classList.add('popup__button_inactive');
+        buttonElement.classList.add('popup__button_disabled');
     } else {
         // иначе сделай кнопку активной
         buttonElement.disabled = false;
-        // доработать
-        buttonElement.classList.remove('popup__button_inactive');
+        buttonElement.classList.remove('popup__button_disabled');
     }
 }; 
 
