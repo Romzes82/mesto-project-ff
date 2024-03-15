@@ -144,7 +144,8 @@ export const clearValidation = (profileForm, validationConfig) => {
     // Находим все поля внутри формы,
     // сделаем из них массив методом Array.from
     const inputList = Array.from(profileForm.querySelectorAll(validationConfig.inputSelector));
-
+    const buttonElement = profileForm.querySelector(validationConfig.submitButtonSelector);
+    
     // Обойдём все элементы полученной коллекции
     inputList.forEach((inputElement) => {
         // каждому полю добавим обработчик события input
@@ -155,4 +156,6 @@ export const clearValidation = (profileForm, validationConfig) => {
         // });
     });
 
+    buttonElement.disabled = true;
+    buttonElement.classList.add(validationConfig.inactiveButtonClass);
 };
