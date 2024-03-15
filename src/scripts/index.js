@@ -2,6 +2,8 @@ import '../pages/index.css' // добавьте импорт главного ф
 import { addCard, deleteCardFunc, likeCardFunc } from './components/card.js';
 import { initialCards } from './cards.js'; 
 import { openModal, closeModal } from './components/modal.js'; 
+// import { Array } from 'core-js';
+// import { keys } from 'core-js/core/array';
 
 // DOM узлы
 const placesList = document.querySelector('.places__list');
@@ -74,3 +76,55 @@ function handleFormSubmitNewCard(evt) {
 initialCards.forEach(element => {
     placesList.append(addCard(element.link, element.name, deleteCardFunc, likeCardFunc, clickCardImageFunc));
 });
+
+// Вынесем все необходимые элементы формы в константы
+const formElement = document.querySelector('.popup__form');
+const formInputName = formElement.querySelector('.popup__input_type_name');
+const formInputDescription = formElement.querySelector('.popup__input_type_description');
+
+formElement.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+});
+
+// Слушатель события input
+formInputName.addEventListener('input', function (evt) {
+  // Выведем в консоль значение свойства validity.valid поля ввода, 
+  // на котором слушаем событие input
+  console.log(evt.target.validity.valid);
+}); 
+
+function enableValidation(validationConfig) {
+    console.log(validationConfig);
+    // const arr = Object.entries(validationConfig); //Array.from(validationConfig);
+    // console.log(arr);
+
+    // arr.forEach(([key, value]) => {
+    //     console.table(key, value);
+    // });
+    Object.keys(validationConfig).forEach((key) => {
+        console.log(validationConfig[key]);
+    })
+}
+
+// включение валидации вызовом enableValidation
+// все настройки передаются при вызове
+
+enableValidation({
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+});
+
+// let arrayLike = {
+//     formSelector: 'Hello',
+//     inputSelector: 'World',
+//     length: 2
+// };
+  
+//   enableValidation(arrayLike);
+//   let arr = Array.from(arrayLike); // (*)
+// //   alert(arr.pop()); // World (метод работает)
+// console.log(arr);
