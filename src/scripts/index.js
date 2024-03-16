@@ -1,5 +1,5 @@
 import '../pages/index.css' // добавьте импорт главного файла стилей
-import { addCard, deleteCardFunc, likeCardFunc, objForRemoveCart, cardId } from './components/card.js';
+import { addCard, deleteCardFunc, likeCardFunc, objForRemoveCart } from './components/card.js';
 import { initialCards } from './cards.js'; 
 import { openModal, closeModal } from './components/modal.js'; 
 import { enableValidation, clearValidation, validationConfig } from './components/validation.js'
@@ -61,6 +61,24 @@ function handleFormSubmitEditProfile(evt) {
     // Зафиксируем текстовое содержимое в элементы заголовка и параграфа страницы из полей формы
     nameInputContent.textContent = nameInput.value;
     jobInputContent.textContent = jobInput.value;
+    const objProfileForServer = {
+        name: nameInput.value,
+        about: jobInput.value
+    }
+    post('/users/me', objProfileForServer, 'PATCH')
+        .then(json => {
+            console.log(json);
+            nameInputContent.textContent = json.name,
+            jobInputContent.textContent = json.about
+        })
+    // ответ
+    // {
+    //     "name": "Marie Skłodowska Curie",
+    //     "about": "Physicist and Chemist",
+    //     "avatar": "https://pictures.s3.yandex.net/frontend-developer/common/ava.jpg",
+    //     "_id": "e20537ed11237f86bbb20ccb",
+    //     "cohort": "cohort0",
+    //   } 
     closeModal(popupTypeEdit);
 }
 
@@ -75,7 +93,7 @@ function clickCardImageFunc(evt) {
 // Обработчик «отправки» формы, хотя пока она никуда отправляться не будет
 function handleFormSubmitNewCard(evt) {
     evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
-    placesList.prepend(addCard(evt.currentTarget.link.value, evt.currentTarget['place-name'].value, deleteCardFunc, likeCardFunc, clickCardImageFunc));
+    // placesList.prepend(addCard(evt.currentTarget.link.value, evt.currentTarget['place-name'].value, deleteCardFunc, likeCardFunc, clickCardImageFunc));
     const obj = {
         link: evt.currentTarget.link.value, 
         name: evt.currentTarget['place-name'].value
@@ -83,7 +101,26 @@ function handleFormSubmitNewCard(evt) {
     evt.currentTarget.reset();
     clearValidation(popupTypeNewCard, validationConfig);
     closeModal(popupTypeNewCard);
-    // post('/cards', obj, 'POST');
+    // post('/cards', obj, 'POST'); нужен .then и .catch
+    post('/cards', obj, 'POST')
+        .then(json => {
+            console.log(json);
+            console.log(json._id);
+            console.log(json.owner._id);
+            cacheResponceFromServer.cardId = json._id;
+            cacheResponceFromServer.ownerCardId = json.owner._id;
+            cacheResponceFromServer.cardName = json.name;
+            cacheResponceFromServer.cardLink = json.link;
+            placesList.prepend(addCard(cacheResponceFromServer.cardLink, cacheResponceFromServer.cardName, deleteCardFunc, likeCardFunc, clickCardImageFunc, cacheResponceFromServer));
+        });
+
+    // cacheResponceFromServer.userId = 
+    // placesList.prepend(addCard(cacheResponceFromServer.cardLink, cacheResponceFromServer.cardName, deleteCardFunc, likeCardFunc, clickCardImageFunc, cacheResponceFromServer));
+    
+    // const obj = {
+    //     link: evt.currentTarget.link.value, 
+    //     name: evt.currentTarget['place-name'].value
+    // }
 }
 
 // функция открывающая попап с контрольным ворпросом, на которой был клик. Она передается в качестве аргумента в ф-цию addCard
@@ -91,11 +128,11 @@ function handleFormSubmitControlQuestion(evt) {
     evt.preventDefault();
     // console.log(evt.currentTarget);
     closeModal(popupTypeDeleteCard);
-    console.log(objForRemoveCart);
-    console.log('/cards/' + objForRemoveCart._id);
-    // post('/card3s/' + objForRemoveCart._id, {}, 'DELETE')
-    //  .then(objForRemoveCart.card.remove())
-    //  .catch(err => console.log('Ошибка ' + err + ' на элементе ' + this.name));
+    // console.log(objForRemoveCart);
+    // console.log('/cards/' + objForRemoveCart._id);
+    post('/cards/' + objForRemoveCart._id, {}, 'DELETE')
+     .then(objForRemoveCart.card.remove())
+     .catch(err => console.log('Ошибка ' + err + ' на элементе ' + this.name));
     // placesList.querySelector('.card_remove_yes-no').remove();
     // document.del_yes - no
     // console.log(deleteCardFunc.cache);
@@ -279,15 +316,16 @@ const profileImage = document.querySelector('.profile__image');
 // Находим DOM-элемент кол-во лайков картиочки card__like-amount
 const cardLikeAmount = document.querySelector('.card__like-amount');
 
-let userId; //или записать все в объект сразу
-
+// let userId; //или записать все в объект сразу userId, ownerCardId, cardId из добавления со страницы добавятся name и link
+// для этого объекта надо создать ф-ю createCaheObj(userId, ownerCardId,...)
+const cacheResponceFromServer = {};
 
 const parsResponseUserInfo = (response) => { 
     nameInputContent.textContent = response.name;
     jobInputContent.textContent = response.about;
     profileImage.style.cssText =  `background-image: url("${response.avatar}")`
     // background-image: url("6666407ac3aa5af1d5de.jpg")
-    userId = response._id;
+    cacheResponceFromServer.userId = response._id;
 
     console.log(response.name)
     console.log(response.about)
@@ -295,11 +333,10 @@ const parsResponseUserInfo = (response) => {
     console.log(response._id)
 }
 
-
 const parsResponseCardsInfo = (response) => { 
 
     console.log("AAAAAAA");
-    console.log('idUser=' + userId);
+    console.log('idUser=' + cacheResponceFromServer.userId);
     //т.е. надо передать аргументом _id хозяина owner карточки и idUser для того чтоб функция deleteCardFunc смогла понимать
     // добавлять класс card__delete - button - hidden или нет.
     // А может попробовать deleteCardFunc.св-во = true или false, если тру то корзину отображаем
@@ -334,7 +371,10 @@ const parsResponseCardsInfo = (response) => {
     //     "createdAt": "2024-03-14T11:53:41.398Z"
     // }]
     // deleteCardFunc.cache = {};
-    deleteCardFunc.userId = userId;
+
+    // deleteCardFunc.userId = userId;
+
+    // cacheResponceFromServer.userId = userId;
     response.forEach(cardObj => { 
         // if (cardObj.owner._id === userId) {
         //     // alert(cardObj._id)
@@ -345,8 +385,12 @@ const parsResponseCardsInfo = (response) => {
 
         // console.log(cardObj._id);
         // cardId = cardObj._id;
-        deleteCardFunc.ownerCardId = cardObj.owner._id;
-        placesList.append(addCard(cardObj.link, cardObj.name, deleteCardFunc, likeCardFunc, clickCardImageFunc, cardObj._id));
+        cacheResponceFromServer.ownerCardId= cardObj.owner._id; // заполнить объект вызовом ф-и createCaheObj(param1, param2,...)
+        cacheResponceFromServer.cardId= cardObj._id;
+        // deleteCardFunc.ownerCardId = cardObj.owner._id;
+        // deleteCardFunc.cardId = cardObj._id;
+        // placesList.append(addCard(cardObj.link, cardObj.name, deleteCardFunc, likeCardFunc, clickCardImageFunc, cardObj._id));
+        placesList.append(addCard(cardObj.link, cardObj.name, deleteCardFunc, likeCardFunc, clickCardImageFunc, cacheResponceFromServer));
      //   console.log(cardObj.likes.length + ' - ' + cardObj.name);
         // cardLikeAmount.textContent = cardObj.likes.length;
     })

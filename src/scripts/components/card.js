@@ -5,10 +5,10 @@ import { openModal, closeModal } from './modal.js';
 const cardTemplate = document.querySelector('#card-template').content;
 
 export const objForRemoveCart = {};
-export let cardId;
+// export let cardId;
 
 // Функция создания карточки
-export function addCard(link, name, deleteCardFunc, likeCardFunc, clickCardImageFunc, cardId) {
+export function addCard(link, name, deleteCardFunc, likeCardFunc, clickCardImageFunc, cacheResponceFromServer) {
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
     const cardImage = cardElement.querySelector('.card__image');
 
@@ -48,15 +48,15 @@ export function addCard(link, name, deleteCardFunc, likeCardFunc, clickCardImage
     // console.log('---');
     // console.log(deleteCardFunc.cardId);
     // здесь надо проверять deleteCardFunc.delvisible и на основе этого вешать обработчик или нет 
-    if (deleteCardFunc.ownerCardId === '2458a5dbf48d2ce30338e441') { 
+    if (cacheResponceFromServer.ownerCardId === cacheResponceFromServer.userId) { 
         cardElement.querySelector('.card__delete-button').classList.remove('card__delete-button-hidden');
         // cardElement.querySelector('.card__delete-button').addEventListener('click', deleteCardFunc);
-        cardElement.querySelector('.card__delete-button').addEventListener('click', deleteCardFunc(cardId));
+        cardElement.querySelector('.card__delete-button').addEventListener('click', deleteCardFunc(cacheResponceFromServer.cardId));
     }
     cardElement.querySelector('.card__like-button').addEventListener('click', likeCardFunc);
     cardImage.addEventListener('click', clickCardImageFunc);
     cardElement.querySelector('.card__title').textContent = name;
-    cardElement.property = deleteCardFunc.cardId;
+    // cardElement.property = deleteCardFunc.cardId;
 
     // возвращаем DOM-элемент созданной карточки
     return cardElement;
@@ -66,10 +66,11 @@ export function addCard(link, name, deleteCardFunc, likeCardFunc, clickCardImage
 //     return (e) => deleteCardFunc(e, cardId);
 //   }; 
 
-function deleteCardById(idCard) {
-    console.log(idCard);
-    objForRemoveCart._id = cardId;
-}
+// function deleteCardById(idCard) {
+//     console.log(idCard);
+//     // objForRemoveCart._id = cardId;
+//     objForRemoveCart._id = idCard;
+// }
 
 export let glob_var;
 
@@ -77,12 +78,14 @@ const popupTypeDeleteCard = document.querySelector('.popup_type_delete_card');
 // Функция-обработчик события удаления карточки
 export function deleteCardFunc(cardId) {
    return function(evt) {
-    deleteCardById(cardId);
+    // deleteCardById(cardId);
+    // console.log(cardId);
+    objForRemoveCart._id = cardId;
     
     evt.target.closest('.places__item').classList.add('card_remove_yes-no');
         
     objForRemoveCart.card = evt.target.closest('.places__item');
-    console.log(objForRemoveCart.card);
+    // console.log(objForRemoveCart.card);
     openModal(popupTypeDeleteCard);
     // deleteCardFunc.cardElem = evt.target.closest('.places__item');
     // evt.target.closest('.places__item').classList.add('card_remove_yes-no');
