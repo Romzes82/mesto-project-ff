@@ -59,7 +59,7 @@ function handleResponce(responce) {
             // });
 }
 
-export function get(uri) {
+function get(uri) {
     // формируем итоговый адрес
     const targetUrl = config.baseUrl + uri;
     return fetch(targetUrl, {
@@ -69,7 +69,7 @@ export function get(uri) {
         .then(handleResponce)
 }
 
-export function post(uri, data, method = 'POST') {
+function post(uri, data, method = 'POST') {
     const targetUrl = config.baseUrl + uri;
     return fetch(targetUrl, {
         method,
@@ -78,6 +78,27 @@ export function post(uri, data, method = 'POST') {
     })
         .then(handleResponce);
 }
+
+export function getInitialUser(uri) {
+    return get(uri);
+}
+
+export function getInitialCards(uri) {
+    return get(uri);
+}
+
+export function setRedactionProfile(uri, data, method) {
+    return post(uri, data, method);
+}
+
+export function setNewCard(uri, data, method) {
+    return post(uri, data, method);
+}
+
+export function setDeleteCard(uri, data, method) {
+    return post(uri, data, method);
+}
+
 
 // [[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
 // const BASE_URL = 'https://jsonplaceholder.typicode.com';
