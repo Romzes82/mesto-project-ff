@@ -59,6 +59,7 @@ function handleResponce(responce) {
             // });
 }
 
+//универсальная функия GET
 export function get(uri) {
     // формируем итоговый адрес
     const targetUrl = config.baseUrl + uri;
@@ -69,6 +70,7 @@ export function get(uri) {
         .then(handleResponce)
 }
 
+//универсальная функия с методом POST, который можно менять на любой другой
 export function post(uri, data, method = 'POST') {
     const targetUrl = config.baseUrl + uri;
     return fetch(targetUrl, {
