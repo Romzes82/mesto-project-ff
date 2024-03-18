@@ -84,9 +84,10 @@ function handleFormSubmitNewCard(evt) {
 // функция открывающая попап с контрольным ворпросом, на которой был клик. Она передается в качестве аргумента в ф-цию addCard
 function handleFormSubmitControlQuestion(evt) { 
     evt.preventDefault();
+    
     // console.log(evt.currentTarget);
     closeModal(popupTypeDeleteCard);
-    console.log(cardToRemove);
+    // console.log(cardToRemove);
     placesList.querySelector('.card_remove_yes-no').remove();
     // document.del_yes - no
     // console.log(deleteCardFunc.cache);

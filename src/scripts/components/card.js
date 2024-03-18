@@ -25,6 +25,7 @@ export function addCard(link, name, deleteCardFunc, likeCardFunc, clickCardImage
     cardElement.querySelector('.card__like-button').addEventListener('click', likeCardFunc);
     cardImage.addEventListener('click', clickCardImageFunc);
     cardElement.querySelector('.card__title').textContent = name;
+    cardElement.property = deleteCardFunc.cardId;
 
     // возвращаем DOM-элемент созданной карточки
     return cardElement;
@@ -33,7 +34,7 @@ export function addCard(link, name, deleteCardFunc, likeCardFunc, clickCardImage
 const popupTypeDeleteCard = document.querySelector('.popup_type_delete_card');
 // Функция-обработчик события удаления карточки
 export function deleteCardFunc(evt) {
-    deleteCardFunc.cardElem = evt.target.closest('.places__item');
+    // deleteCardFunc.cardElem = evt.target.closest('.places__item');
     evt.target.closest('.places__item').classList.add('card_remove_yes-no');
 
     // console.log(deleteCardFunc.ownerCardId);
@@ -46,7 +47,8 @@ export function deleteCardFunc(evt) {
    // openDeletePopup(deleteCardFunc.cardId); // , evt.target.closest('.places__item'));
     // openModal(popupTypeDeleteCard, deleteCardFunc.cardElem);
     // openModal(popupTypeDeleteCard);
-    openDeletePopup(deleteCardFunc.cardId, deleteCardFunc.cardElem);
+    openDeletePopup(deleteCardFunc.cardId, evt.target.closest('.places__item'));
+    // openModal(popupTypeDeleteCard);
     // evt.target.closest('.places__item').remove();
 }
 
@@ -60,6 +62,21 @@ function openDeletePopup(cardId, cardElem) {
     cardToRemove._id = cardId;
     cardToRemove.card = cardElem;
     // openPopup(deletePopup);
-    openModal(popupTypeDeleteCard);
+    openModal(popupTypeDeleteCard, cardToRemove);
 }
 
+// function openModal(data) { 
+//     console.log('open', data.id)
+// }
+
+// function createCard() { 
+//     const onRemove = () => {
+//         openModal({ id: 123 })
+//     }
+
+//     document.querySelector('').addEventListener('click', onRemove);
+//     return { onRemove }
+// }
+
+// const artefacts = createCard();
+// dovument.querySelector('').removeEventListener('click', artefacts.onRemove);
