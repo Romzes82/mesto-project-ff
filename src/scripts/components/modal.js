@@ -1,10 +1,11 @@
 // Ф-ция открытия модального окна
-export function openModal(popup) { 
+export function openModal(popup, data) { 
     popup.classList.add('popup_is-opened');
     // closePopupByEsc(popup);
     popup.addEventListener('click', closePopupByCrossClick);
     popup.addEventListener('click', closePopupByOverleyClick); 
     document.addEventListener('keydown', closePopupByEsc);
+    console.log(data);
 }
 
 // Ф-ция закрытия модального окна

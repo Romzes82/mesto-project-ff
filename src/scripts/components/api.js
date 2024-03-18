@@ -1,13 +1,3 @@
-// const BASE_URL = 'https://nomoreparties.co/v1/';
-
-// {
-//     "name": "Jacques Cousteau",
-//         "about": "Sailor, researcher",
-//             "avatar": "https://pictures.s3.yandex.net/frontend-developer/common/ava.jpg",
-//                 "_id": "2458a5dbf48d2ce30338e441",
-//                     "cohort": "wff-cohort-9"
-// }
-
 export const config = {
     baseUrl: 'https://nomoreparties.co/v1/wff-cohort-9',
     headers: {
@@ -16,51 +6,15 @@ export const config = {
     }
 }
 
-// export const getInitialUser = () => {
-//     // request()
-//     return fetch(`${config.baseUrl}/users/me`, {
-//         headers: config.headers
-//     })
-//         // .then((response) => {
-//         //     return response.json();
-//         // })
-//         .then(handleResponce);
-        
-//        // .then(res => {
-//         //     if (res.ok) {
-//         //         return res.json();
-//         //     }
-
-//         //     // если ошибка, отклоняем промис
-//         //     return Promise.reject(`Ошибка: ${res.status}`);
-//         // });    
-// }
-
-// export const getInitialCards = () => {
-//     return fetch(`${config.baseUrl}/cards`, {
-//         headers: config.headers
-//     })
-//         //  .then((response) => {
-//         //      return response.json();
-//         //  })
-//         .then(handleResponce);
-// }
-
 function handleResponce(responce) {
-    // реализовать обработку ответа сервера. при ок возвращаем объект responce.json иначе ошибку Promise.reject(err)
-    // return responce.json();
-
-            // .then(res => {
-                if (responce.ok) {
-                    return responce.json();
-                }
-                // если ошибка, отклоняем промис
-                     return Promise.reject(`Ошибка: ${responce.status}`);
-            // });
+    // обработка ответа сервера. при ок возвращаем объект responce.json иначе ошибку Promise.reject(err)
+    if (responce.ok) {
+        return responce.json();
+    }
+        return Promise.reject(`Ошибка: ${responce.status}`);
 }
 
-//универсальная функия GET
-export function get(uri) {
+function get(uri) {
     // формируем итоговый адрес
     const targetUrl = config.baseUrl + uri;
     return fetch(targetUrl, {
@@ -68,32 +22,44 @@ export function get(uri) {
         headers: config.headers
     })
         .then(handleResponce)
+        .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`));
 }
 
-//универсальная функия с методом POST, который можно менять на любой другой
-export function post(uri, data, method = 'POST') {
+function post(uri, data, method = 'POST') {
     const targetUrl = config.baseUrl + uri;
     return fetch(targetUrl, {
         method,
         headers: config.headers,
         body: JSON.stringify(data)
     })
-        .then(handleResponce);
+        .then(handleResponce)
+        .catch (err => console.log(`Ошибка ${err} на элементе ${this.name}`));
 }
 
-// [[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
-// const BASE_URL = 'https://jsonplaceholder.typicode.com';
+export function getInitialUser(uri) {
+    return get(uri);
+}
 
-// function request(uri, options) { 
-//     return fetch(BASE_URL + uri, options)
-//         .then((response) => { 
-//             return response.json();
-//         })
-// }
+export function getInitialCards(uri) {
+    return get(uri);
+}
 
-// request('/todos')
-//     .then(res => console.log(res))
-//     .catch(err => console.log(err))
+export function setRedactionProfile(uri, data, method) {
+    return post(uri, data, method);
+}
 
-// request('/users/me', 'GET')
-    // .then((res) => console.log(res))
+export function setNewCard(uri, data, method) {
+    return post(uri, data, method);
+}
+
+export function setDeleteCard(uri, data, method) {
+    return post(uri, data, method);
+}
+
+export function setPutLike(uri, data, method) {
+    return post(uri, data, method);
+}
+
+export function setDeleteLike(uri, data, method) {
+    return post(uri, data, method);
+}
