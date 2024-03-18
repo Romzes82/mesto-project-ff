@@ -48,14 +48,16 @@ export function addCard(link, name, deleteCardFunc, likeCardFunc, clickCardImage
     // console.log('---');
     // console.log(deleteCardFunc.cardId);
     // здесь надо проверять deleteCardFunc.delvisible и на основе этого вешать обработчик или нет 
+    // console.log(cacheResponceFromServer.likesArr);
     if (cacheResponceFromServer.ownerCardId === cacheResponceFromServer.userId) { 
         cardElement.querySelector('.card__delete-button').classList.remove('card__delete-button-hidden');
         // cardElement.querySelector('.card__delete-button').addEventListener('click', deleteCardFunc);
         cardElement.querySelector('.card__delete-button').addEventListener('click', deleteCardFunc(cacheResponceFromServer.cardId));
     }
-    cardElement.querySelector('.card__like-button').addEventListener('click', likeCardFunc);
+    cardElement.querySelector('.card__like-button').addEventListener('click', likeCardFunc(cacheResponceFromServer.likesArr));
     cardImage.addEventListener('click', clickCardImageFunc);
     cardElement.querySelector('.card__title').textContent = name;
+    cardElement.querySelector('.card__like-amount').textContent = cacheResponceFromServer.likesArr.length;
     // cardElement.property = deleteCardFunc.cardId;
 
     // возвращаем DOM-элемент созданной карточки
@@ -85,7 +87,7 @@ export function deleteCardFunc(cardId) {
     evt.target.closest('.places__item').classList.add('card_remove_yes-no');
         
     objForRemoveCart.card = evt.target.closest('.places__item');
-    // console.log(objForRemoveCart.card);
+       // console.log(objForRemoveCart.card);
     openModal(popupTypeDeleteCard);
     // deleteCardFunc.cardElem = evt.target.closest('.places__item');
     // evt.target.closest('.places__item').classList.add('card_remove_yes-no');
@@ -109,8 +111,16 @@ export function deleteCardFunc(cardId) {
 }
 
 // функция-обработчик события установки/снятия лайка карточки
-export function likeCardFunc(evt) { 
-    evt.target.classList.toggle('card__like-button_is-active');
+export function likeCardFunc(arrLikes) { 
+    return function (evt) {
+        console.log(arrLikes);
+        const tgl = evt.target.classList.toggle('card__like-button_is-active');
+        if (tgl) { 
+            console.log(arrLikes.length + 1)
+        } else {
+            console.log(arrLikes.length)
+        }
+    }    
 }
 
 // Открытие попапа удаления карточки
