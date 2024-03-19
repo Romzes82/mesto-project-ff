@@ -2,8 +2,8 @@ import '../pages/index.css' // добавьте импорт главного ф
 import { addCard, deleteCardFunc, likeCardFunc, objForRemoveCart } from './components/card.js';
 import { initialCards } from './cards.js'; 
 import { openModal, closeModal } from './components/modal.js'; 
-import { enableValidation, clearValidation, validationConfig } from './components/validation.js'
-import { getInitialUser, getInitialCards, setRedactionProfile, setNewCard, setDeleteCard } from './components/api.js'
+import { enableValidation, clearValidation, validationConfig } from './components/validation.js';
+import { getInitialUser, getInitialCards, setRedactionProfile, setNewCard, setDeleteCard } from './components/api.js';
 
 // DOM узлы
 const placesList = document.querySelector('.places__list');
@@ -128,12 +128,15 @@ function handleFormSubmitControlQuestion(evt) {
     evt.preventDefault();
     
     // console.log(evt.currentTarget);
-    closeModal(popupTypeDeleteCard);
+    // closeModal(popupTypeDeleteCard);
     // console.log(objForRemoveCart);
     // console.log('/cards/' + objForRemoveCart._id);
     setDeleteCard('/cards/' + objForRemoveCart._id, {}, 'DELETE')
-     .then(objForRemoveCart.card.remove())
-     .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`));
+        .then(response => { 
+            objForRemoveCart.card.remove();
+            closeModal(popupTypeDeleteCard);
+        })
+         .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`));
     // placesList.querySelector('.card_remove_yes-no').remove();
     // document.del_yes - no
     // console.log(deleteCardFunc.cache);
@@ -232,7 +235,7 @@ const parsResponseCardsInfo = (response) => {
         // cardId = cardObj._id;
         cacheResponceFromServer.ownerCardId= cardObj.owner._id; // заполнить объект вызовом ф-и createCaheObj(param1, param2,...)
         cacheResponceFromServer.cardId = cardObj._id;
-        cacheResponceFromServer.likesArr = cardObj.likes;
+        cacheResponceFromServer.likesObj = cardObj.likes;
         // deleteCardFunc.ownerCardId = cardObj.owner._id;
         // deleteCardFunc.cardId = cardObj._id;
         // placesList.append(addCard(cardObj.link, cardObj.name, deleteCardFunc, likeCardFunc, clickCardImageFunc, cardObj._id));
