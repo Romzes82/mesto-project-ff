@@ -2,7 +2,8 @@ import '../pages/index.css' // добавьте импорт главного ф
 import { addCard, deleteCardFunc, likeCardFunc, objForRemoveCart } from './components/card.js';
 import { openModal, closeModal } from './components/modal.js'; 
 import { enableValidation, clearValidation, validationConfig } from './components/validation.js';
-import { getInitialUser, getInitialCards, setRedactionProfile, setNewCard, setDeleteCard, setPutLike, setDeleteLike } from './components/api.js';
+import { getInitialUser, getInitialCards, setRedactionProfile, setNewCard, setDeleteCard, setPutLike, setDeleteLike,
+    setChangeAvatarProfile } from './components/api.js';
 
 // DOM узлы
 const placesList = document.querySelector('.places__list');
@@ -117,6 +118,15 @@ enableValidation(validationConfig);
 
 // Находим DOM-элемент аватар profile__image
 const profileImage = document.querySelector('.profile__image');
+
+// PATCH https://nomoreparties.co/v1/cohortId/users/me/avatar
+//  setChangeAvatarProfile('/users/me/avatar', { avatar: 'https://pictures.s3.yandex.net/frontend-developer/common/ava.jpg' }, 'PATCH');
+
+// вешаем слушателя на profileImage
+// profileImage.addEventListener('mouseover', () => {
+    // openModal(popupTypeNewCard);
+    // http://localhost:8080/6c7bf05444b9793fdf6e.svg
+// });
 
 //объявляем переменную, для последующей передачи аргументом в addCard
 let userId;

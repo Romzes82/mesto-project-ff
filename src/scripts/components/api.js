@@ -63,3 +63,10 @@ export function setPutLike(uri, data, method) {
 export function setDeleteLike(uri, data, method) {
     return post(uri, data, method);
 }
+
+export function setChangeAvatarProfile(uri, data, method) {
+    return post(uri, data, method);
+}
+
+
+// PATCH https://nomoreparties.co/v1/cohortId/users/me/avatar 
