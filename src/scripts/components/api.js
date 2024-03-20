@@ -21,8 +21,14 @@ function get(uri) {
         method: 'GET',
         headers: config.headers
     })
-        .then(handleResponce)
-        .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`));
+        .then(res => handleResponce(res))
+
+        // .then((res) => {
+        //     if (res.ok) {
+        //        return handleResponce(res);
+        //     }
+        // })
+        .catch(err => console.log(err));
 }
 
 function post(uri, data, method = 'POST') {
@@ -32,8 +38,13 @@ function post(uri, data, method = 'POST') {
         headers: config.headers,
         body: JSON.stringify(data)
     })
-        .then(handleResponce)
-        .catch (err => console.log(`Ошибка ${err} на элементе ${this.name}`));
+        .then(res => handleResponce(res))
+        // .then((res) => {
+        //     if (res.ok) {
+        //         return handleResponce(res);
+        //     }
+        // })        
+        .catch (err => console.log(err));
 }
 
 export function getInitialUser(uri) {

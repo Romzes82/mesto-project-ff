@@ -71,6 +71,7 @@ formElement_editAvatar.addEventListener('submit', handleFormSubmitEditAvatar);
 // Обработчик «отправки» формы редактирования профиля
 function handleFormSubmitEditProfile(evt) {
     evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
+    renderLoading(true);
     // Зафиксируем текстовое содержимое в элементы заголовка и параграфа страницы из полей формы
     nameInputContent.textContent = nameInput.value;
     jobInputContent.textContent = jobInput.value;
@@ -84,7 +85,16 @@ function handleFormSubmitEditProfile(evt) {
             jobInputContent.textContent = json.about;
             closeModal(popupTypeEdit);
         })      
-        .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`));
+        .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`))
+        .finally(() => renderLoading(false));
+}
+
+function renderLoading(isLoading) { 
+    if (isLoading) {
+        console.log('грузим')
+    } else { 
+        console.log('заружено')
+    }     
 }
 
 // функция открывающая попап с картинкой карточки, на которой был клик
