@@ -68,5 +68,6 @@ export function setChangeAvatarProfile(uri, data, method) {
     return post(uri, data, method);
 }
 
-
-// PATCH https://nomoreparties.co/v1/cohortId/users/me/avatar 
+// export function checkValidUrl(url) { 
+//     proxy
+// }

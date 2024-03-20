@@ -7,7 +7,7 @@ export const validationConfig = {
     errorClass: 'popup__error_visible'
 }
 
-const showInputError = (formElement, inputElement, errorMessage) => {
+export const showInputError = (formElement, inputElement, errorMessage) => {
     // Находим элемент ошибки внутри самой функции
     const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
     // Остальной код такой же
@@ -31,6 +31,7 @@ const hideInputError = (formElement, inputElement) => {
 
 const isValid = (formElement, inputElement) => {
 
+    // patternMismatch отвечает за проверку ввода регулярным выражением
     if (inputElement.validity.patternMismatch) {
         // встроенный метод setCustomValidity принимает на вход строку
         // и заменяет ею стандартное сообщение об ошибке
@@ -42,6 +43,16 @@ const isValid = (formElement, inputElement) => {
     } else {
         inputElement.setCustomValidity("");
     }
+
+    // typeMismatch отвечает за наличие типа данных, на который рассчитано поле. Ищем type c url
+    if (inputElement.validity.typeMismatch) {
+        inputElement.setCustomValidity(inputElement.dataset.errorMessage);
+        // console.log(inputElement.dataset.errorMessage);
+    } else {
+        inputElement.setCustomValidity("");
+    }
+
+    // console.log(inputElement.validity.typeMismatch);
 
     if (!inputElement.validity.valid) {
         // showInputError теперь получает параметром форму, в которой
@@ -139,7 +150,7 @@ export const enableValidation = (validationConfig) => {
 // все настройки validationConfig передаются при вызове
 
 export const clearValidation = (profileForm, validationConfig) => {
-    console.log(profileForm);
+    // console.log(profileForm);
 
     // Находим все поля внутри формы,
     // сделаем из них массив методом Array.from

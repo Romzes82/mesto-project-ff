@@ -1,7 +1,7 @@
 import '../pages/index.css' // добавьте импорт главного файла стилей
 import { addCard, deleteCardFunc, likeCardFunc, objForRemoveCart } from './components/card.js';
 import { openModal, closeModal } from './components/modal.js'; 
-import { enableValidation, clearValidation, validationConfig } from './components/validation.js';
+import { enableValidation, clearValidation, validationConfig, showInputError } from './components/validation.js';
 import { getInitialUser, getInitialCards, setRedactionProfile, setNewCard, setDeleteCard, setPutLike, setDeleteLike,
     setChangeAvatarProfile } from './components/api.js';
 
@@ -32,6 +32,14 @@ const nameInputContent = document.querySelector('.profile__title');
 const jobInputContent = document.querySelector('.profile__description');
 // Находим DOM-элемент img с классом popup__image попапа с картинкой
 const popupImg = popupTypeImage.querySelector('.popup__image');
+// DOM узел попапа edit аватарки
+const popupTypeEditAvatar = document.querySelector('.popup_type_edit_avatar');
+// Находим форму в DOM
+const formElement_editAvatar = document.forms['edit-avatar']; 
+// Находим поля формы в DOM
+const urlInput = formElement_editAvatar.querySelector('.popup__input_type_url')
+// Находим DOM-элемент аватар profile__image
+const profileImage = document.querySelector('.profile__image');
 
 //добавляем слушателя на кнопку edit
 profileEditButton.addEventListener('click', () => {
@@ -47,10 +55,18 @@ profileAddButton.addEventListener('click', () => {
     openModal(popupTypeNewCard);
 });
 
+// вешаем слушателя на клик по profileImage для добавления аватарки
+profileImage.addEventListener('click', () => {
+    // urlInput.value = ""; если надо очищать поле перед открытием формы
+    clearValidation(popupTypeEditAvatar.querySelector(validationConfig.formSelector), validationConfig);
+    openModal(popupTypeEditAvatar);
+});
+
 // Прикрепляем обработчик к форме: он будет следить за событием “submit” - «отправка»
 formElement_editProfile.addEventListener('submit', handleFormSubmitEditProfile);
 formElement_newCard.addEventListener('submit', handleFormSubmitNewCard);
 formElement_controlQuestion.addEventListener('submit', handleFormSubmitControlQuestion);
+formElement_editAvatar.addEventListener('submit', handleFormSubmitEditAvatar);
 
 // Обработчик «отправки» формы редактирования профиля
 function handleFormSubmitEditProfile(evt) {
@@ -66,9 +82,9 @@ function handleFormSubmitEditProfile(evt) {
         .then(json => {
             nameInputContent.textContent = json.name;
             jobInputContent.textContent = json.about;
+            closeModal(popupTypeEdit);
         })      
         .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`));
-    closeModal(popupTypeEdit);
 }
 
 // функция открывающая попап с картинкой карточки, на которой был клик
@@ -87,15 +103,51 @@ function handleFormSubmitNewCard(evt) {
         name: evt.currentTarget['place-name'].value
     }
     evt.currentTarget.reset();
-    clearValidation(popupTypeNewCard, validationConfig);
-    closeModal(popupTypeNewCard);
+    // clearValidation(popupTypeNewCard, validationConfig);
+    clearValidation(popupTypeNewCard.querySelector(validationConfig.formSelector), validationConfig);
+    
+    // closeModal(popupTypeNewCard);
     setNewCard('/cards', tempObj, 'POST')
         .then(json => {
             placesList.prepend(addCard(json, deleteCardFunc, likeCardFunc, clickCardImageFunc, userId,
                 openModal, setPutLike, setDeleteLike));
+            closeModal(popupTypeNewCard);
         })
         .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`));
 }
+
+// Обработчик «отправки» формы редактирования аватарки
+function handleFormSubmitEditAvatar(evt) { 
+    evt.preventDefault();
+    const tempObj = {
+        avatar: urlInput.value
+    };
+
+    if (!imageExists(tempObj.avatar)) {
+        showInputError(formElement_editAvatar, urlInput, "По указанной ссылке нет картинки");
+        return;
+    } else { 
+        // urlInput.setCustomValidity("");
+    }
+
+    urlInput.value = "";
+    setChangeAvatarProfile('/users/me/avatar', tempObj, 'PATCH')
+        .then(json => {
+            profileImage.style.cssText = `background-image: url("${json.avatar}")`;
+            // clearValidation(popupTypeEditAvatar, validationConfig);
+            closeModal(popupTypeEditAvatar);
+        })
+        .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`));
+}
+
+//функция проверяющая есть ли по ссылке изображение 
+function imageExists(image_url) {
+    const http = new XMLHttpRequest();
+    http.open('HEAD', image_url, false);
+    http.send();
+    return http.status != 404;
+}
+
 
 // функция открывающая попап с контрольным ворпросом, на которой был клик.
 function handleFormSubmitControlQuestion(evt) { 
@@ -115,18 +167,6 @@ function handleFormSubmitControlQuestion(evt) {
 enableValidation(validationConfig);
 
 //  ------------------------------------- API ------------------------------------
-
-// Находим DOM-элемент аватар profile__image
-const profileImage = document.querySelector('.profile__image');
-
-// PATCH https://nomoreparties.co/v1/cohortId/users/me/avatar
-//  setChangeAvatarProfile('/users/me/avatar', { avatar: 'https://pictures.s3.yandex.net/frontend-developer/common/ava.jpg' }, 'PATCH');
-
-// вешаем слушателя на profileImage
-// profileImage.addEventListener('mouseover', () => {
-    // openModal(popupTypeNewCard);
-    // http://localhost:8080/6c7bf05444b9793fdf6e.svg
-// });
 
 //объявляем переменную, для последующей передачи аргументом в addCard
 let userId;
