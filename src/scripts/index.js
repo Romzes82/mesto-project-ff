@@ -3,7 +3,7 @@ import { addCard, deleteCardFunc, likeCardFunc, objForRemoveCart } from './compo
 import { openModal, closeModal } from './components/modal.js'; 
 import { enableValidation, clearValidation, validationConfig, showInputError } from './components/validation.js';
 import { getInitialUser, getInitialCards, setRedactionProfile, setNewCard, setDeleteCard, setPutLike, setDeleteLike,
-    setChangeAvatarProfile } from './components/api.js';
+    setChangeAvatarProfile, checkUrl } from './components/api.js';
 
 // DOM узлы
 const placesList = document.querySelector('.places__list');
@@ -92,10 +92,10 @@ function handleFormSubmitEditProfile(evt) {
 
 function renderLoading(isLoading, elemButton) { 
     if (isLoading) {
-        console.log('грузим');
+        // console.log('грузим');
         elemButton.textContent = 'Сохранить...';
     } else { 
-        console.log('заружено');
+        // console.log('заружено');
         elemButton.textContent = 'Сохранить';
     }     
 }
@@ -146,7 +146,8 @@ function handleFormSubmitEditAvatar(evt) {
         avatar: urlInput.value
     };
 
-    if (!imageExists(tempObj.avatar)) {
+    // if (!imageExists(tempObj.avatar)) {
+    if (false) {        
         showInputError(formElement_editAvatar, urlInput, "По указанной ссылке нет картинки");
         return;
     } else { 
@@ -220,3 +221,10 @@ Promise.all([getInitialUser('/users/me'), getInitialCards('/cards')])
         renderingCardsInfo(getCards);
     })
     .catch(err => console.log(err));
+
+// checkUrl('https://e7.pngegg.com/pngimages/863/315/png-clipart-javascript-world-wide-web-product-design-logo-javascript-text-orange.png', 'https://api.codetabs.com/v1/proxy?quest=')
+//     .then(response => { 
+//         console.log(response);
+//         console.log('inRun');
+//         console.log(response);
+//     })

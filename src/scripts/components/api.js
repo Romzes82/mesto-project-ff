@@ -79,11 +79,19 @@ export function setChangeAvatarProfile(uri, data, method) {
     return post(uri, data, method);
 }
 
-// export function checkUrl(url, proxy = null) {
-//      return fetch(proxy ? proxy(url) : url, {
-//     method: 'HEAD'
-//      }).then(response => { 
-//          if (response.ok) return Promise.resolve();
-//          else return Promise.reject();
-//      })
-// }
+export function checkUrl(url, proxy = null) {
+    return fetch(proxy + url, {
+        method: 'HEAD'
+    }).then(response => {
+        if (response.ok) {
+;           console.log(response);
+            console.log('ok')
+            return Promise.resolve();
+        } else {
+            console.log('else ' + response);
+            return Promise.reject();
+        }
+    }).catch(err => console.log('err ' + err));
+}
+
+// https://api.codetabs.com/v1/proxy?quest=<url_to_http_resource>
