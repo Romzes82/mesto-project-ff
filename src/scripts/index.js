@@ -71,7 +71,8 @@ formElement_editAvatar.addEventListener('submit', handleFormSubmitEditAvatar);
 // Обработчик «отправки» формы редактирования профиля
 function handleFormSubmitEditProfile(evt) {
     evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
-    renderLoading(true);
+    const button = evt.currentTarget.querySelector('.popup__button');
+    renderLoading(true, button);
     // Зафиксируем текстовое содержимое в элементы заголовка и параграфа страницы из полей формы
     nameInputContent.textContent = nameInput.value;
     jobInputContent.textContent = jobInput.value;
@@ -86,14 +87,16 @@ function handleFormSubmitEditProfile(evt) {
             closeModal(popupTypeEdit);
         })      
         .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`))
-        .finally(() => renderLoading(false));
+        .finally(() => renderLoading(false, button));
 }
 
-function renderLoading(isLoading) { 
+function renderLoading(isLoading, elemButton) { 
     if (isLoading) {
-        console.log('грузим')
+        console.log('грузим');
+        elemButton.textContent = 'Сохранить...';
     } else { 
-        console.log('заружено')
+        console.log('заружено');
+        elemButton.textContent = 'Сохранить';
     }     
 }
 
@@ -108,27 +111,37 @@ function clickCardImageFunc(evt) {
 // Обработчик «отправки» формы добавления карточки
 function handleFormSubmitNewCard(evt) {
     evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
+    const button = evt.currentTarget.querySelector('.popup__button');
+    renderLoading(true, button);
     const tempObj = {
         link: evt.currentTarget.link.value, 
         name: evt.currentTarget['place-name'].value
     }
-    evt.currentTarget.reset();
+
     // clearValidation(popupTypeNewCard, validationConfig);
-    clearValidation(popupTypeNewCard.querySelector(validationConfig.formSelector), validationConfig);
+    // evt.currentTarget.reset();
+    // clearValidation(popupTypeNewCard.querySelector(validationConfig.formSelector), validationConfig);
     
     // closeModal(popupTypeNewCard);
     setNewCard('/cards', tempObj, 'POST')
         .then(json => {
             placesList.prepend(addCard(json, deleteCardFunc, likeCardFunc, clickCardImageFunc, userId,
                 openModal, setPutLike, setDeleteLike));
+            formElement_newCard.reset();
+            clearValidation(popupTypeNewCard.querySelector(validationConfig.formSelector), validationConfig);
             closeModal(popupTypeNewCard);
         })
-        .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`));
+        .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`))
+        .finally(() => { 
+            renderLoading(false, button);
+        });
 }
 
 // Обработчик «отправки» формы редактирования аватарки
 function handleFormSubmitEditAvatar(evt) { 
     evt.preventDefault();
+    const button = evt.currentTarget.querySelector('.popup__button');
+    renderLoading(true, button);    
     const tempObj = {
         avatar: urlInput.value
     };
@@ -147,7 +160,10 @@ function handleFormSubmitEditAvatar(evt) {
             // clearValidation(popupTypeEditAvatar, validationConfig);
             closeModal(popupTypeEditAvatar);
         })
-        .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`));
+        .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`))
+        .finally(() => {
+            renderLoading(false, button);
+        });
 }
 
 //функция проверяющая есть ли по ссылке изображение 

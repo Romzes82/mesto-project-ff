@@ -79,6 +79,11 @@ export function setChangeAvatarProfile(uri, data, method) {
     return post(uri, data, method);
 }
 
-// export function checkValidUrl(url) { 
-//     proxy
+// export function checkUrl(url, proxy = null) {
+//      return fetch(proxy ? proxy(url) : url, {
+//     method: 'HEAD'
+//      }).then(response => { 
+//          if (response.ok) return Promise.resolve();
+//          else return Promise.reject();
+//      })
 // }
