@@ -146,8 +146,8 @@ function handleFormSubmitEditAvatar(evt) {
         avatar: urlInput.value
     };
 
-    // if (!imageExists(tempObj.avatar)) {
-    if (false) {        
+    if (!imageExists(tempObj.avatar)) {
+    // if (false) {    
         showInputError(formElement_editAvatar, urlInput, "По указанной ссылке нет картинки");
         return;
     } else { 
@@ -167,10 +167,37 @@ function handleFormSubmitEditAvatar(evt) {
         });
 }
 
+function handleResponse() {
+    if (this.status = 200) { 
+        console.log(this.getResponseHeader('content-type'));
+    }
+}
 //функция проверяющая есть ли по ссылке изображение 
 function imageExists(image_url) {
     const http = new XMLHttpRequest();
-    http.open('HEAD', image_url, false);
+    // fetch('https://api.codetabs.com/v1/proxy?quest=' + image_url)
+    //     .then(req => console.log(req.once('response', (res) => { res.headers; })));
+    http.open('HEAD', 'https://api.codetabs.com/v1/proxy?quest=' + image_url, false);
+    // http.onreadystatechange = handleResponse;
+
+    http.onreadystatechange = function () { // (3)
+        if (http.status === 200) {
+            console.log('Готово!');
+            console.log(http.getResponseHeader('content-type').split('/')[0]); // mime-типы image/...
+         }
+        // if (http.readyState != 4) return;
+
+        // console.log('Готово!');
+
+        // if (http.status != 200) {
+        //     console.log(http.status + ': ' + http.statusText);
+        // } else {
+        //     console.log(http.responseText);
+        // }
+
+    }
+
+    // console.log(http.getResponseHeader('content-type'));
     http.send();
     return http.status != 404;
 }
@@ -222,9 +249,25 @@ Promise.all([getInitialUser('/users/me'), getInitialCards('/cards')])
     })
     .catch(err => console.log(err));
 
-// checkUrl('https://e7.pngegg.com/pngimages/863/315/png-clipart-javascript-world-wide-web-product-design-logo-javascript-text-orange.png', 'https://api.codetabs.com/v1/proxy?quest=')
+const proxy = 'https://api.codetabs.com/v1/proxy?quest=';
+const url_img = 'https://e7.pngegg.com/pngimages/863/315/png-clipart-javascript-world-wide-web-product-design-logo-javascript-text-orange.png';
+
+// checkUrl('https://e7.pngegg.com/pngimages/863/315/png-clipart-javascript-world-wide-web-product-design-logo-javascript-text-orange.png', proxy)
 //     .then(response => { 
 //         console.log(response);
 //         console.log('inRun');
 //         console.log(response);
+//     })
+
+// checkUrl(url_img, proxy)
+//     .then((repo) => {
+//         console.log(repo);
+//         if (resolve.status === 'fulfilled') {
+//             console.log(repo.status);
+//             setValue(url.toString(), url.pathname);
+//             const newUrl = url.pathname
+//                 .replace(/^\//, '')
+//                 .replace(/\/$/, '')
+//                 .split('/');
+//         }
 //     })
