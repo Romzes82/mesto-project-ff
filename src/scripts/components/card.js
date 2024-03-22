@@ -6,6 +6,7 @@ export function addCard(cardObj, deleteCardFunc, likeCardFunc, clickCardImageFun
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
     const cardImage = cardElement.querySelector('.card__image');
     const cardDeleteButton = cardElement.querySelector('.card__delete-button');
+    const cardLikeButton = cardElement.querySelector('.card__like-button');
 
     // наполняем содержимым
     cardImage.src = cardObj.link;
@@ -17,7 +18,11 @@ export function addCard(cardObj, deleteCardFunc, likeCardFunc, clickCardImageFun
         cardDeleteButton.addEventListener('click', deleteCardFunc(cardObj._id, openModal));
     }
 
-    cardElement.querySelector('.card__like-button').addEventListener('click', likeCardFunc(cardObj._id, setPutLike, setDeleteLike));
+    if (cardObj.likes.some(like => like._id === userId)) {
+        cardLikeButton.classList.add('card__like-button_is-active');
+    }
+
+    cardLikeButton.addEventListener('click', likeCardFunc(cardObj._id, setPutLike, setDeleteLike));
     cardElement.querySelector('.card__title').textContent = cardObj.name;
     cardElement.querySelector('.card__like-amount').textContent = cardObj.likes.length;
 
