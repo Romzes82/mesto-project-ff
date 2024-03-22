@@ -3,7 +3,7 @@ import { addCard, deleteCardFunc, likeCardFunc, objForRemoveCart } from './compo
 import { openModal, closeModal } from './components/modal.js'; 
 import { enableValidation, clearValidation, validationConfig, showInputError } from './components/validation.js';
 import { getInitialUser, getInitialCards, setRedactionProfile, setNewCard, setDeleteCard, setPutLike, setDeleteLike,
-    setChangeAvatarProfile, checkUrl } from './components/api.js';
+    setChangeAvatarProfile } from './components/api.js';
 
 // DOM узлы
 const placesList = document.querySelector('.places__list');
@@ -118,11 +118,6 @@ function handleFormSubmitNewCard(evt) {
         name: evt.currentTarget['place-name'].value
     }
 
-    // clearValidation(popupTypeNewCard, validationConfig);
-    // evt.currentTarget.reset();
-    // clearValidation(popupTypeNewCard.querySelector(validationConfig.formSelector), validationConfig);
-    
-    // closeModal(popupTypeNewCard);
     setNewCard('/cards', tempObj, 'POST')
         .then(json => {
             placesList.prepend(addCard(json, deleteCardFunc, likeCardFunc, clickCardImageFunc, userId,
@@ -141,17 +136,14 @@ function handleFormSubmitNewCard(evt) {
 function handleFormSubmitEditAvatar(evt) { 
     evt.preventDefault();
     const button = evt.currentTarget.querySelector('.popup__button');
-    renderLoading(true, button);    
+    renderLoading(true, button);
     const tempObj = {
         avatar: urlInput.value
     };
 
     if (!imageExists(tempObj.avatar)) {
-    // if (false) {    
         showInputError(formElement_editAvatar, urlInput, "По указанной ссылке нет картинки");
         return;
-    } else { 
-        // urlInput.setCustomValidity("");
     }
 
     urlInput.value = "";
@@ -167,35 +159,13 @@ function handleFormSubmitEditAvatar(evt) {
         });
 }
 
-// function handleResponse() {
-//     if (this.status = 200) { 
-//         console.log(this.getResponseHeader('content-type'));
-//     }
-// }
-//функция проверяющая есть ли по ссылке изображение 
-
 function imageExists(image_url) {
     const http = new XMLHttpRequest();
     http.open('HEAD', image_url, false);
     http.send();
-    console.log(http.status != 404);
+    // console.log(http.getResponseHeader('content-type').split('/')[0]);
     return http.status != 404;
-    
 }
-
-function isImage(image_url) {
-    fetch('https://api.codetabs.com/v1/proxy?quest=' + image_url)
-        .then((res) => {
-            return res.headers.get('Content-Type').split('/')[0] === 'image';
-            // console.log(res.headers.get('Content-Type').split('/')[0] === 'image');
-            // if (res.headers.get('Content-Type').split('/')[0] === 'image') { 
-            //     return true;
-            // }
-        });
-
-}
-
-
 
 // функция открывающая попап с контрольным ворпросом, на которой был клик.
 function handleFormSubmitControlQuestion(evt) { 
@@ -242,26 +212,3 @@ Promise.all([getInitialUser('/users/me'), getInitialCards('/cards')])
         renderingCardsInfo(getCards);
     })
     .catch(err => console.log(err));
-
-const proxy = 'https://api.codetabs.com/v1/proxy?quest=';
-const url_img = 'https://e7.pngegg.com/pngimages/863/315/png-clipart-javascript-world-wide-web-product-design-logo-javascript-text-orange.png';
-
-// checkUrl('https://e7.pngegg.com/pngimages/863/315/png-clipart-javascript-world-wide-web-product-design-logo-javascript-text-orange.png', proxy)
-//     .then(response => { 
-//         console.log(response);
-//         console.log('inRun');
-//         console.log(response);
-//     })
-
-// checkUrl(url_img, proxy)
-//     .then((repo) => {
-//         console.log(repo);
-//         if (resolve.status === 'fulfilled') {
-//             console.log(repo.status);
-//             setValue(url.toString(), url.pathname);
-//             const newUrl = url.pathname
-//                 .replace(/^\//, '')
-//                 .replace(/\/$/, '')
-//                 .split('/');
-//         }
-//     })

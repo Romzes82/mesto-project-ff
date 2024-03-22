@@ -152,3 +152,49 @@ const objNewCard1 = {
 //         })
 //     })
 //     .catch(err => console.log(err));
+
+const proxy = 'https://api.codetabs.com/v1/proxy?quest=';
+const url_img = 'https://e7.pngegg.com/pngimages/863/315/png-clipart-javascript-world-wide-web-product-design-logo-javascript-text-orange.png';
+const url_img_1 = 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg';
+
+// checkUrl('https://e7.pngegg.com/pngimages/863/315/png-clipart-javascript-world-wide-web-product-design-logo-javascript-text-orange.png', proxy)
+//     .then(response => {
+//         console.log(response);
+//         console.log('inRun');
+//         console.log(response);
+//     })
+
+// checkUrl(url_img, proxy)
+//     .then((repo) => {
+//         console.log(repo);
+//         if (resolve.status === 'fulfilled') {
+//             console.log(repo.status);
+//             setValue(url.toString(), url.pathname);
+//             const newUrl = url.pathname
+//                 .replace(/^\//, '')
+//                 .replace(/\/$/, '')
+//                 .split('/');
+//         }
+//     })
+
+// checkUrl(url_img, proxy)
+
+// function imageExists(image_url) {
+//     fetch(image_url, {
+//         method: 'HEAD'
+//     })
+//         .then(response => {
+//             // if (response.ok && response.headers.get('Content-Type').split('/')[0]) {
+//             if (response.ok) {
+//                 console.log(response.headers.get('Content-Type'));
+//                 return false;
+//             } else {
+//                 console.log('else ' + response);
+//                 return false;
+//             }
+//         })
+//         .catch(err => {
+//             console.log('err Не удалось загрузить картинку' + err);
+//             return false;
+//         })
+// }
