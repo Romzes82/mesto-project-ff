@@ -14,37 +14,27 @@ function handleResponce(responce) {
         return Promise.reject(`Ошибка: ${responce.status}`);
 }
 
+function request(url, options) {
+    // принимает два аргумента: урл и объект опций, как и `fetch`
+    return fetch(url, options).then(handleResponce)
+}
+
 function get(uri) {
     // формируем итоговый адрес
     const targetUrl = config.baseUrl + uri;
-    return fetch(targetUrl, {
+    return request(targetUrl, {
         method: 'GET',
-        headers: config.headers
+        headers: config.headers 
     })
-        .then(res => handleResponce(res))
-
-        // .then((res) => {
-        //     if (res.ok) {
-        //        return handleResponce(res);
-        //     }
-        // })
-        .catch(err => console.log(err));
 }
 
 function post(uri, data, method = 'POST') {
     const targetUrl = config.baseUrl + uri;
-    return fetch(targetUrl, {
+    return request(targetUrl, {
         method,
         headers: config.headers,
         body: JSON.stringify(data)
     })
-        .then(res => handleResponce(res))
-        // .then((res) => {
-        //     if (res.ok) {
-        //         return handleResponce(res);
-        //     }
-        // })        
-        .catch (err => console.log(err));
 }
 
 export function getInitialUser(uri) {
@@ -79,3 +69,22 @@ export function setChangeAvatarProfile(uri, data, method) {
     return post(uri, data, method);
 }
 
+// function getOld(uri) {
+//     // формируем итоговый адрес
+//     const targetUrl = config.baseUrl + uri;
+//     return fetch(targetUrl, {
+//         method: 'GET',
+//         headers: config.headers
+//     })
+//         .then(res => handleResponce(res))
+// }
+
+// function postOld(uri, data, method = 'POST') {
+//     const targetUrl = config.baseUrl + uri;
+//     return fetch(targetUrl, {
+//         method,
+//         headers: config.headers,
+//         body: JSON.stringify(data)
+//     })
+//         .then(res => handleResponce(res))
+// }
