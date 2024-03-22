@@ -167,40 +167,34 @@ function handleFormSubmitEditAvatar(evt) {
         });
 }
 
-function handleResponse() {
-    if (this.status = 200) { 
-        console.log(this.getResponseHeader('content-type'));
-    }
-}
+// function handleResponse() {
+//     if (this.status = 200) { 
+//         console.log(this.getResponseHeader('content-type'));
+//     }
+// }
 //функция проверяющая есть ли по ссылке изображение 
+
 function imageExists(image_url) {
     const http = new XMLHttpRequest();
-    // fetch('https://api.codetabs.com/v1/proxy?quest=' + image_url)
-    //     .then(req => console.log(req.once('response', (res) => { res.headers; })));
-    http.open('HEAD', 'https://api.codetabs.com/v1/proxy?quest=' + image_url, false);
-    // http.onreadystatechange = handleResponse;
-
-    http.onreadystatechange = function () { // (3)
-        if (http.status === 200) {
-            console.log('Готово!');
-            console.log(http.getResponseHeader('content-type').split('/')[0]); // mime-типы image/...
-         }
-        // if (http.readyState != 4) return;
-
-        // console.log('Готово!');
-
-        // if (http.status != 200) {
-        //     console.log(http.status + ': ' + http.statusText);
-        // } else {
-        //     console.log(http.responseText);
-        // }
-
-    }
-
-    // console.log(http.getResponseHeader('content-type'));
+    http.open('HEAD', image_url, false);
     http.send();
+    console.log(http.status != 404);
     return http.status != 404;
+    
 }
+
+function isImage(image_url) {
+    fetch('https://api.codetabs.com/v1/proxy?quest=' + image_url)
+        .then((res) => {
+            return res.headers.get('Content-Type').split('/')[0] === 'image';
+            // console.log(res.headers.get('Content-Type').split('/')[0] === 'image');
+            // if (res.headers.get('Content-Type').split('/')[0] === 'image') { 
+            //     return true;
+            // }
+        });
+
+}
+
 
 
 // функция открывающая попап с контрольным ворпросом, на которой был клик.
