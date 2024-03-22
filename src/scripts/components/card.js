@@ -5,15 +5,16 @@ const cardTemplate = document.querySelector('#card-template').content;
 export function addCard(cardObj, deleteCardFunc, likeCardFunc, clickCardImageFunc, userId, openModal, setPutLike, setDeleteLike) {
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
     const cardImage = cardElement.querySelector('.card__image');
+    const cardDeleteButton = cardElement.querySelector('.card__delete-button');
 
     // наполняем содержимым
     cardImage.src = cardObj.link;
     cardImage.alt = cardObj.name;
-    cardImage.addEventListener('click', clickCardImageFunc);
+    cardImage.addEventListener('click', () => clickCardImageFunc(cardObj));
 
     if (cardObj.owner._id === userId) { 
-        cardElement.querySelector('.card__delete-button').classList.remove('card__delete-button-hidden');
-        cardElement.querySelector('.card__delete-button').addEventListener('click', deleteCardFunc(cardObj._id, openModal));
+        cardDeleteButton.classList.remove('card__delete-button-hidden');
+        cardDeleteButton.addEventListener('click', deleteCardFunc(cardObj._id, openModal));
     }
 
     cardElement.querySelector('.card__like-button').addEventListener('click', likeCardFunc(cardObj._id, setPutLike, setDeleteLike));
@@ -46,14 +47,14 @@ export function likeCardFunc(cardId, setPutLike, setDeleteLike) {
         // проверяем что возвращает метод toogle
         const boolTgl = evt.target.classList.toggle('card__like');
         if (boolTgl) {
-            setPutLike('/cards/likes/' + cardId, {}, 'PUT')
+            setPutLike(cardId)
                 .then(json => { 
                     cardLikeAmount.textContent = json.likes.length;
                     evt.target.classList.toggle('card__like-button_is-active');
                 })
                 .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`));
         } else {
-            setDeleteLike('/cards/likes/' + cardId, {}, 'DELETE')
+            setDeleteLike(cardId)
                 .then(json => {
                     cardLikeAmount.textContent = json.likes.length;
                     evt.target.classList.toggle('card__like-button_is-active');

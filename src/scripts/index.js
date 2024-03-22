@@ -101,10 +101,10 @@ function renderLoading(isLoading, elemButton) {
 }
 
 // функция открывающая попап с картинкой карточки, на которой был клик
-function clickCardImageFunc(evt) { 
-    popupImg.src = evt.target.src;
-    popupImg.alt = evt.target.alt;
-    popupTypeImage.querySelector('.popup__caption').textContent = evt.target.alt;
+function clickCardImageFunc(cardObj) { 
+    popupImg.src = cardObj.link;
+    popupImg.alt = cardObj.name;       
+    popupTypeImage.querySelector('.popup__caption').textContent = cardObj.name;  
     openModal(popupTypeImage);
 }
 

@@ -57,12 +57,12 @@ export function setDeleteCard(uri, data, method) {
     return post(uri, data, method);
 }
 
-export function setPutLike(uri, data, method) {
-    return post(uri, data, method);
+export function setPutLike(cardId) {
+    return post('/cards/likes/' + cardId, {}, 'PUT');
 }
 
-export function setDeleteLike(uri, data, method) {
-    return post(uri, data, method);
+export function setDeleteLike(cardId) {
+    return post('/cards/likes/' + cardId, {}, 'DELETE');
 }
 
 export function setChangeAvatarProfile(uri, data, method) {
