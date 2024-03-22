@@ -143,6 +143,7 @@ function handleFormSubmitEditAvatar(evt) {
 
     if (!imageExists(tempObj.avatar)) {
         showInputError(formElement_editAvatar, urlInput, "По указанной ссылке нет картинки");
+        renderLoading(false, button);
         return;
     }
 
