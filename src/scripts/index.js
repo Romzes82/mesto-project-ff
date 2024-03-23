@@ -3,7 +3,7 @@ import { addCard, deleteCardFunc, likeCardFunc, objForRemoveCart } from './compo
 import { openModal, closeModal } from './components/modal.js'; 
 import { enableValidation, clearValidation, validationConfig, showInputError } from './components/validation.js';
 import { getInitialUser, getInitialCards, setRedactionProfile, setNewCard, setDeleteCard, setPutLike, setDeleteLike,
-    setChangeAvatarProfile } from './components/api.js';
+    setChangeAvatarProfile, itIsImage, } from './components/api.js';
 
 
 // DOM узлы
@@ -38,8 +38,6 @@ const popupTypeEditAvatar = document.querySelector('.popup_type_edit_avatar');
 // Находим форму в DOM
 const formElementEditAvatar = document.forms['edit-avatar']; 
 // Находим поля формы в DOM
-// form1.elements.yandex
-// const urlInputAvatar = formElementEditAvatar.querySelector('.popup__input_type_url');
 const urlInputAvatar = formElementEditAvatar.elements.link;
 const urlInputCard = formElementNewCard.elements.link;
 // Находим DOM-элемент аватар profile__image
@@ -125,10 +123,12 @@ function handleFormSubmitNewCard(evt) {
         name: evt.currentTarget['place-name'].value
     }
 
-    if (!isImage(tempObj.link)) {
+    if (!itIsImage(tempObj.link)) {
         isNotImage(formElementNewCard, urlInputCard, button);
         return;
     }
+
+    tempObj.link = evt.currentTarget.link.value;
 
     setNewCard(tempObj)
         .then(json => {
@@ -152,16 +152,19 @@ function handleFormSubmitEditAvatar(evt) {
     renderLoading(true, button);
     const tempObj = {
         avatar: urlInputAvatar.value
+        // 'https://api.codetabs.com/v1/proxy?quest=' + 
     };
 
     // imageExists(tempObj.avatar);
     // return;
 
-    if (!isImage(tempObj.avatar)) {
+    if (!itIsImage(tempObj.avatar)) {
         isNotImage(formElementEditAvatar, urlInputAvatar, button);
         return;
     }
     
+    tempObj.avatar = urlInputAvatar.value;
+
     setChangeAvatarProfile(tempObj)
         .then(json => {
             profileImage.style.cssText = `background-image: url("${json.avatar}")`;
@@ -181,20 +184,6 @@ function isNotImage(formElement, inputElement, button) {
     renderLoading(false, button);
 }
 
-function isImage(image_url) {
-    const proxy = 'https://api.codetabs.com/v1/proxy?quest=';
-    const http = new XMLHttpRequest();
-    try {
-        http.open('HEAD', proxy + image_url, false);
-        http.send();
-        if (http.getResponseHeader('content-type').split('/')[0] != 'image') {
-            return false;
-        }
-        return http.status != 404;
-      } catch (err) {
-        return false;
-      }
-}
 
 // функция открывающая попап с контрольным ворпросом, на которой был клик.
 function handleFormSubmitControlQuestion(evt) { 

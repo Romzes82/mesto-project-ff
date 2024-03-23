@@ -1,3 +1,5 @@
+export const PROXY = 'https://api.codetabs.com/v1/proxy?quest=';
+
 export const config = {
     baseUrl: 'https://nomoreparties.co/v1/wff-cohort-9',
     headers: {
@@ -68,6 +70,24 @@ export function setDeleteLike(cardId) {
 export function setChangeAvatarProfile(data) {
     return post('/users/me/avatar', data, 'PATCH');
 }
+
+export function itIsImage(image_url) {
+    const xhr = new XMLHttpRequest();
+    try {
+        xhr.open('HEAD', PROXY + image_url, false);
+        xhr.send();
+        if (xhr.getResponseHeader('content-type').split('/')[0] != 'image') {
+            // console.log('not image '+ xhr.getResponseHeader('content-type').split('/')[0]);
+            // console.log(xhr.status);
+            return false;
+        }
+        return xhr.status != 404;
+      } catch (err) {
+        console.log('err-' + err);
+        return false;
+      }
+}
+
 
 // function getOld(uri) {
 //     // формируем итоговый адрес
