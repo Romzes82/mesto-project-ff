@@ -146,12 +146,12 @@ function handleFormSubmitEditAvatar(evt) {
         avatar: urlInput.value
     };
 
+
     if (!imageExists(tempObj.avatar)) {
         showInputError(formElementEditAvatar, urlInput, "По указанной ссылке нет картинки");
         renderLoading(false, button);
         return;
     }
-
     
     setChangeAvatarProfile('/users/me/avatar', tempObj, 'PATCH')
         .then(json => {
@@ -169,10 +169,15 @@ function handleFormSubmitEditAvatar(evt) {
 
 function imageExists(image_url) {
     const http = new XMLHttpRequest();
-    http.open('HEAD', image_url, false);
-    http.send();
-    // console.log(http.getResponseHeader('content-type').split('/')[0]);
-    return http.status != 404;
+    try {
+        http.open('HEAD', image_url, false);
+        http.send();
+        // console.log(http.getResponseHeader('content-type').split('/')[0]);
+        return http.status != 404;
+      } catch (err) {
+        console.log(err);
+        return false;
+      }
 }
 
 // функция открывающая попап с контрольным ворпросом, на которой был клик.

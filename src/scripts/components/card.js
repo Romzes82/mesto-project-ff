@@ -49,20 +49,20 @@ export function deleteCardFunc(cardId, openModal) {
 export function likeCardFunc(cardId, setPutLike, setDeleteLike) { 
     return function (evt) {
         const cardLikeAmount = evt.target.closest('.card__like-group').querySelector('.card__like-amount');
-        // проверяем что возвращает метод toogle
-        const boolTgl = evt.target.classList.toggle('card__like');
-        if (boolTgl) {
+        // проверяем наличие класса
+         const hasLike = evt.target.classList.contains('card__like-button_is-active');
+        if (!hasLike) {
             setPutLike(cardId)
                 .then(json => { 
                     cardLikeAmount.textContent = json.likes.length;
-                    evt.target.classList.toggle('card__like-button_is-active');
+                    evt.target.classList.add('card__like-button_is-active');
                 })
                 .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`));
         } else {
             setDeleteLike(cardId)
                 .then(json => {
                     cardLikeAmount.textContent = json.likes.length;
-                    evt.target.classList.toggle('card__like-button_is-active');
+                    evt.target.classList.remove('card__like-button_is-active');
                 })
                  .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`));
         }

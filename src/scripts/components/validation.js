@@ -91,10 +91,11 @@ const hasInvalidInput = (inputArr) => {
 const toggleButtonState = (inputList, buttonElement, validationConfig) => {
     // Если есть хотя бы один невалидный инпут
     if (hasInvalidInput(inputList)) {
-        // сделай кнопку неактивной
-        buttonElement.disabled = true;
-        // buttonElement.classList.add('popup__button_disabled');
-        buttonElement.classList.add(validationConfig.inactiveButtonClass);
+        disableButton(buttonElement, validationConfig);
+        // // сделай кнопку неактивной
+        // buttonElement.disabled = true;
+        // // buttonElement.classList.add('popup__button_disabled');
+        // buttonElement.classList.add(validationConfig.inactiveButtonClass);
     } else {
         // иначе сделай кнопку активной
         buttonElement.disabled = false;
@@ -103,14 +104,11 @@ const toggleButtonState = (inputList, buttonElement, validationConfig) => {
     }
 };
 
-//--------------------------
-// const disableButton(submitButton, validationConfig) {
-//     // buttonElement.disabled = true;
-//     // buttonElement.classList.add(validationConfig.inactiveButtonClass); 
-//     submitButton.disabled = true;
-//     submitButton.classList.add(validationConfig.inactiveButtonClass); 
-// }
-//--------------------------
+// функция дективации кнопки
+const disableButton = (submitButton, validationConfig) => {
+    submitButton.disabled = true;
+    submitButton.classList.add(validationConfig.inactiveButtonClass); 
+}
 
 // Добавление обработчиков всем полям формы
 const setEventListeners = (formElement, validationConfig) => {
@@ -123,7 +121,15 @@ const setEventListeners = (formElement, validationConfig) => {
     const buttonElement = formElement.querySelector(validationConfig.submitButtonSelector);
 
     // Вызовем toggleButtonState, чтобы не ждать ввода данных в поля
+    // toggleButtonState(inputList, buttonElement, validationConfig);
+
+    // деактивируем кнопку при 1й загрузке сайта
     toggleButtonState(inputList, buttonElement, validationConfig);
+    
+    // обработчик reset для деактивации кнопки
+    formElement.addEventListener('reset', () => {
+        disableButton(buttonElement, validationConfig)
+    });
 
     // Обойдём все элементы полученной коллекции
     inputList.forEach((inputElement) => {
@@ -180,6 +186,7 @@ export const clearValidation = (profileForm, validationConfig) => {
         // });
     });
 
-    buttonElement.disabled = true;
-    buttonElement.classList.add(validationConfig.inactiveButtonClass);
+    disableButton(buttonElement, validationConfig);
+    // buttonElement.disabled = true;
+    // buttonElement.classList.add(validationConfig.inactiveButtonClass);
 };
