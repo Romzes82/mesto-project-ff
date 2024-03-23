@@ -37,24 +37,24 @@ function post(uri, data, method = 'POST') {
     })
 }
 
-export function getInitialUser(uri) {
-    return get(uri);
+export function getInitialUser() {
+    return get('/users/me');
 }
 
-export function getInitialCards(uri) {
-    return get(uri);
+export function getInitialCards() {
+    return get('/cards');
 }
 
-export function setRedactionProfile(uri, data, method) {
-    return post(uri, data, method);
+export function setRedactionProfile(data) {
+    return post('/users/me', data, 'PATCH');
 }
 
-export function setNewCard(uri, data, method) {
-    return post(uri, data, method);
+export function setNewCard(data) {
+    return post('/cards', data)
 }
 
-export function setDeleteCard(uri, data, method) {
-    return post(uri, data, method);
+export function setDeleteCard(cardId) {
+    return post('/cards/' + cardId, {}, 'DELETE');
 }
 
 export function setPutLike(cardId) {
@@ -65,8 +65,8 @@ export function setDeleteLike(cardId) {
     return post('/cards/likes/' + cardId, {}, 'DELETE');
 }
 
-export function setChangeAvatarProfile(uri, data, method) {
-    return post(uri, data, method);
+export function setChangeAvatarProfile(data) {
+    return post('/users/me/avatar', data, 'PATCH');
 }
 
 // function getOld(uri) {

@@ -38,7 +38,10 @@ const popupTypeEditAvatar = document.querySelector('.popup_type_edit_avatar');
 // Находим форму в DOM
 const formElementEditAvatar = document.forms['edit-avatar']; 
 // Находим поля формы в DOM
-const urlInput = formElementEditAvatar.querySelector('.popup__input_type_url')
+// form1.elements.yandex
+// const urlInputAvatar = formElementEditAvatar.querySelector('.popup__input_type_url');
+const urlInputAvatar = formElementEditAvatar.elements.link;
+const urlInputCard = formElementNewCard.elements.link;
 // Находим DOM-элемент аватар profile__image
 const profileImage = document.querySelector('.profile__image');
 // Находим DOM-элемент подписи попапа с картинкой
@@ -83,7 +86,7 @@ function handleFormSubmitEditProfile(evt) {
         name: nameInput.value,
         about: jobInput.value
     }
-    setRedactionProfile('/users/me', tempObj, 'PATCH')
+    setRedactionProfile(tempObj)
         .then(json => {
             nameInputContent.textContent = json.name;
             jobInputContent.textContent = json.about;
@@ -115,14 +118,19 @@ function clickCardImageFunc(cardObj) {
 // Обработчик «отправки» формы добавления карточки
 function handleFormSubmitNewCard(evt) {
     evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
-    const button = evt.currentTarget.querySelector('.popup__button');
+    const button = evt.submitter; //evt.currentTarget.querySelector('.popup__button');
     renderLoading(true, button);
     const tempObj = {
         link: evt.currentTarget.link.value, 
         name: evt.currentTarget['place-name'].value
     }
 
-    setNewCard('/cards', tempObj, 'POST')
+    if (!isImage(tempObj.link)) {
+        isNotImage(formElementNewCard, urlInputCard, button);
+        return;
+    }
+
+    setNewCard(tempObj)
         .then(json => {
             placesList.prepend(addCard(json, deleteCardFunc, likeCardFunc, clickCardImageFunc, userId,
                 openModal, setPutLike, setDeleteLike));
@@ -143,39 +151,47 @@ function handleFormSubmitEditAvatar(evt) {
     const button = evt.submitter; //evt.currentTarget.querySelector('.popup__button');
     renderLoading(true, button);
     const tempObj = {
-        avatar: urlInput.value
+        avatar: urlInputAvatar.value
     };
 
+    // imageExists(tempObj.avatar);
+    // return;
 
-    if (!imageExists(tempObj.avatar)) {
-        showInputError(formElementEditAvatar, urlInput, "По указанной ссылке нет картинки");
-        renderLoading(false, button);
+    if (!isImage(tempObj.avatar)) {
+        isNotImage(formElementEditAvatar, urlInputAvatar, button);
         return;
     }
     
-    setChangeAvatarProfile('/users/me/avatar', tempObj, 'PATCH')
+    setChangeAvatarProfile(tempObj)
         .then(json => {
             profileImage.style.cssText = `background-image: url("${json.avatar}")`;
             // clearValidation(popupTypeEditAvatar, validationConfig);
-            urlInput.value = "";
+            urlInputAvatar.value = "";
             closeModal(popupTypeEditAvatar);
         })
-        // .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`))
-        .catch(console.error)
+        .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`))
+        // .catch(console.error)
         .finally(() => {
             renderLoading(false, button);
         });
 }
 
-function imageExists(image_url) {
+function isNotImage(formElement, inputElement, button) {
+    showInputError(formElement, inputElement, "По указанной ссылке нет картинки");
+    renderLoading(false, button);
+}
+
+function isImage(image_url) {
+    const proxy = 'https://api.codetabs.com/v1/proxy?quest=';
     const http = new XMLHttpRequest();
     try {
-        http.open('HEAD', image_url, false);
+        http.open('HEAD', proxy + image_url, false);
         http.send();
-        // console.log(http.getResponseHeader('content-type').split('/')[0]);
+        if (http.getResponseHeader('content-type').split('/')[0] != 'image') {
+            return false;
+        }
         return http.status != 404;
       } catch (err) {
-        console.log(err);
         return false;
       }
 }
@@ -183,7 +199,7 @@ function imageExists(image_url) {
 // функция открывающая попап с контрольным ворпросом, на которой был клик.
 function handleFormSubmitControlQuestion(evt) { 
     evt.preventDefault();
-    setDeleteCard('/cards/' + objForRemoveCart._id, {}, 'DELETE')
+    setDeleteCard(objForRemoveCart._id)
         .then(() => { 
             objForRemoveCart.card.remove();
             closeModal(popupTypeDeleteCard);
@@ -219,7 +235,7 @@ const renderingCardsInfo = (response) => {
 }
 
 // Загрузка информации о пользователе с сервера и загрузка карточек с сервера методом Promise.all()
-Promise.all([getInitialUser('/users/me'), getInitialCards('/cards')])
+Promise.all([getInitialUser(), getInitialCards()])
     .then(([getUser, getCards]) => {
         // responses — массив результатов выполнения промисов
         renderingUserInfo(getUser);
