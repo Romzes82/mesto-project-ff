@@ -18,7 +18,7 @@ export const showInputError = (formElement, inputElement, errorMessage) => {
     errorElement.classList.add(validationConfig.errorClass);
 };
 
-const hideInputError = (formElement, inputElement) => {
+const hideInputError = (formElement, inputElement, validationConfig) => {
     // Находим элемент ошибки
     const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
     // Остальной код такой же
@@ -31,6 +31,15 @@ const hideInputError = (formElement, inputElement) => {
 
 const isValid = (formElement, inputElement) => {
 
+ 
+     // typeMismatch отвечает за наличие типа данных, на который рассчитано поле. Ищем type c url
+     if (inputElement.validity.typeMismatch) {
+        inputElement.setCustomValidity(inputElement.dataset.errorMessage);
+        // console.log(inputElement.dataset.errorMessage);
+    } else {
+        inputElement.setCustomValidity("");
+    }
+
     // patternMismatch отвечает за проверку ввода регулярным выражением
     if (inputElement.validity.patternMismatch) {
         // встроенный метод setCustomValidity принимает на вход строку
@@ -40,17 +49,12 @@ const isValid = (formElement, inputElement) => {
         // обратите внимание, что в js имя атрибута пишется в camelCase (да-да, в
         // HTML мы писали в kebab-case, это не опечатка)
         inputElement.setCustomValidity(inputElement.dataset.errorMessage);
+        // console.log(inputElement.validity.typeMismatch);
     } else {
         inputElement.setCustomValidity("");
     }
 
-    // typeMismatch отвечает за наличие типа данных, на который рассчитано поле. Ищем type c url
-    if (inputElement.validity.typeMismatch) {
-        inputElement.setCustomValidity(inputElement.dataset.errorMessage);
-        // console.log(inputElement.dataset.errorMessage);
-    } else {
-        inputElement.setCustomValidity("");
-    }
+
 
     // console.log(inputElement.validity.typeMismatch);
 
@@ -61,7 +65,7 @@ const isValid = (formElement, inputElement) => {
     } else {
         // hideInputError теперь получает параметром форму, в которой
         // находится проверяемое поле, и само это поле
-        hideInputError(formElement, inputElement);
+        hideInputError(formElement, inputElement, validationConfig);
     }
 };
 
@@ -84,7 +88,7 @@ const hasInvalidInput = (inputArr) => {
 // Функция принимает массив полей ввода
 // и элемент кнопки, состояние которой нужно менять
 
-const toggleButtonState = (inputList, buttonElement) => {
+const toggleButtonState = (inputList, buttonElement, validationConfig) => {
     // Если есть хотя бы один невалидный инпут
     if (hasInvalidInput(inputList)) {
         // сделай кнопку неактивной
@@ -99,8 +103,17 @@ const toggleButtonState = (inputList, buttonElement) => {
     }
 };
 
+//--------------------------
+// const disableButton(submitButton, validationConfig) {
+//     // buttonElement.disabled = true;
+//     // buttonElement.classList.add(validationConfig.inactiveButtonClass); 
+//     submitButton.disabled = true;
+//     submitButton.classList.add(validationConfig.inactiveButtonClass); 
+// }
+//--------------------------
+
 // Добавление обработчиков всем полям формы
-const setEventListeners = (formElement) => {
+const setEventListeners = (formElement, validationConfig) => {
     // Находим все поля внутри формы,
     // сделаем из них массив методом Array.from
     // const inputList = Array.from(formElement.querySelectorAll('.popup__input'));
@@ -110,7 +123,7 @@ const setEventListeners = (formElement) => {
     const buttonElement = formElement.querySelector(validationConfig.submitButtonSelector);
 
     // Вызовем toggleButtonState, чтобы не ждать ввода данных в поля
-    toggleButtonState(inputList, buttonElement);
+    toggleButtonState(inputList, buttonElement, validationConfig);
 
     // Обойдём все элементы полученной коллекции
     inputList.forEach((inputElement) => {
@@ -120,7 +133,7 @@ const setEventListeners = (formElement) => {
             // передав ей форму и проверяемый элемент
             isValid(formElement, inputElement);
             // Вызовем toggleButtonState и передадим ей массив полей и кнопку
-            toggleButtonState(inputList, buttonElement);
+            toggleButtonState(inputList, buttonElement, validationConfig);
         });
     });
 };
@@ -142,7 +155,7 @@ export const enableValidation = (validationConfig) => {
     formList.forEach((formElement) => {
         // Для каждой формы вызовем функцию setEventListeners,
         // передав ей элемент формы
-        setEventListeners(formElement);
+        setEventListeners(formElement, validationConfig);
     });
 };
 
@@ -163,7 +176,7 @@ export const clearValidation = (profileForm, validationConfig) => {
         // inputElement.addEventListener('input', () => {
         // Внутри колбэка вызовем isValid,
         // передав ей форму и проверяемый элемент
-        hideInputError(profileForm, inputElement)
+        hideInputError(profileForm, inputElement, validationConfig)
         // });
     });
 

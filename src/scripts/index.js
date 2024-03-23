@@ -5,6 +5,7 @@ import { enableValidation, clearValidation, validationConfig, showInputError } f
 import { getInitialUser, getInitialCards, setRedactionProfile, setNewCard, setDeleteCard, setPutLike, setDeleteLike,
     setChangeAvatarProfile } from './components/api.js';
 
+
 // DOM узлы
 const placesList = document.querySelector('.places__list');
 // DOM узел попапа edit
@@ -20,12 +21,12 @@ const profileEditButton = document.querySelector('.profile__edit-button');
 //дом узел кнопки добавления профиля
 const profileAddButton = document.querySelector('.profile__add-button');
 // Находим форму в DOM
-const formElement_editProfile = document.querySelector('.popup_type_edit .popup__content .popup__form');
-const formElement_newCard = document.querySelector('.popup_type_new-card .popup__content .popup__form');
-const formElement_controlQuestion = document.forms['control-question']; 
+const formElementEditProfile = document.forms['edit-profile'];
+const formElementNewCard = document.forms['new-place'];
+const formElementControlQuestion = document.forms['control-question'];
 // Находим поля формы в DOM
-const nameInput = formElement_editProfile.querySelector('.popup__input_type_name');
-const jobInput = formElement_editProfile.querySelector('.popup__input_type_description');
+const nameInput = formElementEditProfile.querySelector('.popup__input_type_name');
+const jobInput = formElementEditProfile.querySelector('.popup__input_type_description');
 // Находим DOM-элемент заголовок profile__title
 const nameInputContent = document.querySelector('.profile__title');
 // Находим DOM-элемент параграф profile__description
@@ -35,18 +36,20 @@ const popupImg = popupTypeImage.querySelector('.popup__image');
 // DOM узел попапа edit аватарки
 const popupTypeEditAvatar = document.querySelector('.popup_type_edit_avatar');
 // Находим форму в DOM
-const formElement_editAvatar = document.forms['edit-avatar']; 
+const formElementEditAvatar = document.forms['edit-avatar']; 
 // Находим поля формы в DOM
-const urlInput = formElement_editAvatar.querySelector('.popup__input_type_url')
+const urlInput = formElementEditAvatar.querySelector('.popup__input_type_url')
 // Находим DOM-элемент аватар profile__image
 const profileImage = document.querySelector('.profile__image');
+// Находим DOM-элемент подписи попапа с картинкой
+const popapImageCaption = popupTypeImage.querySelector('.popup__caption');
 
 //добавляем слушателя на кнопку edit
 profileEditButton.addEventListener('click', () => {
     // при каждом клике на кнопке редактирования полям инпута присвоить значения со страницы
     nameInput.value = nameInputContent.textContent;
     jobInput.value = jobInputContent.textContent;
-    clearValidation(popupTypeEdit.querySelector(validationConfig.formSelector), validationConfig);
+    clearValidation(formElementEditProfile, validationConfig);
     openModal(popupTypeEdit);
 });
 
@@ -58,24 +61,24 @@ profileAddButton.addEventListener('click', () => {
 // вешаем слушателя на клик по profileImage для добавления аватарки
 profileImage.addEventListener('click', () => {
     // urlInput.value = ""; если надо очищать поле перед открытием формы
-    clearValidation(popupTypeEditAvatar.querySelector(validationConfig.formSelector), validationConfig);
+    clearValidation(formElementEditAvatar, validationConfig);
     openModal(popupTypeEditAvatar);
 });
 
 // Прикрепляем обработчик к форме: он будет следить за событием “submit” - «отправка»
-formElement_editProfile.addEventListener('submit', handleFormSubmitEditProfile);
-formElement_newCard.addEventListener('submit', handleFormSubmitNewCard);
-formElement_controlQuestion.addEventListener('submit', handleFormSubmitControlQuestion);
-formElement_editAvatar.addEventListener('submit', handleFormSubmitEditAvatar);
+formElementEditProfile.addEventListener('submit', handleFormSubmitEditProfile);
+formElementNewCard.addEventListener('submit', handleFormSubmitNewCard);
+formElementControlQuestion.addEventListener('submit', handleFormSubmitControlQuestion);
+formElementEditAvatar.addEventListener('submit', handleFormSubmitEditAvatar);
 
 // Обработчик «отправки» формы редактирования профиля
 function handleFormSubmitEditProfile(evt) {
     evt.preventDefault(); // Эта строчка отменяет стандартную отправку формы.
-    const button = evt.currentTarget.querySelector('.popup__button');
+    const button = evt.submitter; //evt.currentTarget.querySelector('.popup__button');
     renderLoading(true, button);
     // Зафиксируем текстовое содержимое в элементы заголовка и параграфа страницы из полей формы
-    nameInputContent.textContent = nameInput.value;
-    jobInputContent.textContent = jobInput.value;
+    // nameInputContent.textContent = nameInput.value;
+    // jobInputContent.textContent = jobInput.value;
     const tempObj = {
         name: nameInput.value,
         about: jobInput.value
@@ -86,7 +89,8 @@ function handleFormSubmitEditProfile(evt) {
             jobInputContent.textContent = json.about;
             closeModal(popupTypeEdit);
         })      
-        .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`))
+        // .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`))
+        .catch(console.error)
         .finally(() => renderLoading(false, button));
 }
 
@@ -104,7 +108,7 @@ function renderLoading(isLoading, elemButton) {
 function clickCardImageFunc(cardObj) { 
     popupImg.src = cardObj.link;
     popupImg.alt = cardObj.name;       
-    popupTypeImage.querySelector('.popup__caption').textContent = cardObj.name;  
+    popapImageCaption.textContent = cardObj.name; 
     openModal(popupTypeImage);
 }
 
@@ -122,11 +126,12 @@ function handleFormSubmitNewCard(evt) {
         .then(json => {
             placesList.prepend(addCard(json, deleteCardFunc, likeCardFunc, clickCardImageFunc, userId,
                 openModal, setPutLike, setDeleteLike));
-            formElement_newCard.reset();
-            clearValidation(popupTypeNewCard.querySelector(validationConfig.formSelector), validationConfig);
+            formElementNewCard.reset();
+            // clearValidation(popupTypeNewCard.querySelector(validationConfig.formSelector), validationConfig);
             closeModal(popupTypeNewCard);
         })
-        .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`))
+        // .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`))
+        .catch(console.error)
         .finally(() => { 
             renderLoading(false, button);
         });
@@ -135,26 +140,28 @@ function handleFormSubmitNewCard(evt) {
 // Обработчик «отправки» формы редактирования аватарки
 function handleFormSubmitEditAvatar(evt) { 
     evt.preventDefault();
-    const button = evt.currentTarget.querySelector('.popup__button');
+    const button = evt.submitter; //evt.currentTarget.querySelector('.popup__button');
     renderLoading(true, button);
     const tempObj = {
         avatar: urlInput.value
     };
 
     if (!imageExists(tempObj.avatar)) {
-        showInputError(formElement_editAvatar, urlInput, "По указанной ссылке нет картинки");
+        showInputError(formElementEditAvatar, urlInput, "По указанной ссылке нет картинки");
         renderLoading(false, button);
         return;
     }
 
-    urlInput.value = "";
+    
     setChangeAvatarProfile('/users/me/avatar', tempObj, 'PATCH')
         .then(json => {
             profileImage.style.cssText = `background-image: url("${json.avatar}")`;
             // clearValidation(popupTypeEditAvatar, validationConfig);
+            urlInput.value = "";
             closeModal(popupTypeEditAvatar);
         })
-        .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`))
+        // .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`))
+        .catch(console.error)
         .finally(() => {
             renderLoading(false, button);
         });
@@ -176,7 +183,8 @@ function handleFormSubmitControlQuestion(evt) {
             objForRemoveCart.card.remove();
             closeModal(popupTypeDeleteCard);
         })
-         .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`));
+        //  .catch(err => console.log(`Ошибка ${err} на элементе ${this.name}`));
+            .catch(console.error);
 }
 
 
