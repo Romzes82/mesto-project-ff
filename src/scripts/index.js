@@ -130,7 +130,7 @@ function handleFormSubmitNewCard(evt) {
             return setNewCard(tempObj)
                 .then(json => {
                     // placesList.prepend(addCard(json, objFuncs, userId));
-                    renderCard(json, 'append');
+                    renderCard(json);
                 });
         }
         // вызываем универсальную функцию, передавая в нее запрос, событие и текст изменения кнопки (если нужен другой, а не `"Сохранение..."`)
@@ -146,7 +146,7 @@ function renderCard(item, method = "prepend") {
     // вставляем карточку, используя метод (вставится `prepend` или `append`)
     // cardList[ method ](cardElement);
     // placesList.prepend(addCard(json, objFuncs, userId));
-     placesList[ method ](cardElement);
+    return placesList[ method ](cardElement);
  }
 
 // Обработчик «отправки» формы редактирования аватарки
