@@ -90,23 +90,3 @@ export function itIsImage(image_url) {
       }
 }
 
-
-// function getOld(uri) {
-//     // формируем итоговый адрес
-//     const targetUrl = config.baseUrl + uri;
-//     return fetch(targetUrl, {
-//         method: 'GET',
-//         headers: config.headers
-//     })
-//         .then(res => handleResponce(res))
-// }
-
-// function postOld(uri, data, method = 'POST') {
-//     const targetUrl = config.baseUrl + uri;
-//     return fetch(targetUrl, {
-//         method,
-//         headers: config.headers,
-//         body: JSON.stringify(data)
-//     })
-//         .then(res => handleResponce(res))
-// }

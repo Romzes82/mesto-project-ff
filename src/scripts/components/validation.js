@@ -21,9 +21,6 @@ export const showInputError = (formElement, inputElement, errorMessage) => {
 const hideInputError = (formElement, inputElement, validationConfig) => {
     // Находим элемент ошибки
     const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
-    // Остальной код такой же
-    // inputElement.classList.remove('popup__input_type_error');
-    // errorElement.classList.remove('popup__error_visible');
     inputElement.classList.remove(validationConfig.inputErrorClass);
     errorElement.classList.remove(validationConfig.errorClass);
     errorElement.textContent = '';
@@ -54,10 +51,6 @@ const isValid = (formElement, inputElement) => {
         inputElement.setCustomValidity("");
     }
 
-
-
-    // console.log(inputElement.validity.typeMismatch);
-
     if (!inputElement.validity.valid) {
         // showInputError теперь получает параметром форму, в которой
         // находится проверяемое поле, и само это поле
@@ -71,7 +64,6 @@ const isValid = (formElement, inputElement) => {
 
 // Вызовем функцию isValid на каждый ввод символа
 // nameInput.addEventListener('input', isValid);
-
 // Функция принимает массив полей
 
 const hasInvalidInput = (inputArr) => {
@@ -80,7 +72,6 @@ const hasInvalidInput = (inputArr) => {
         // Если поле не валидно, колбэк вернёт true
         // Обход массива прекратится и вся функция
         // hasInvalidInput вернёт true
-
         return !inputElement.validity.valid;
     })
 };
@@ -119,7 +110,6 @@ const setEventListeners = (formElement, validationConfig) => {
     // Найдём в текущей форме кнопку отправки
     // const buttonElement = formElement.querySelector('.popup__button');
     const buttonElement = formElement.querySelector(validationConfig.submitButtonSelector);
-
     // Вызовем toggleButtonState, чтобы не ждать ввода данных в поля
     // toggleButtonState(inputList, buttonElement, validationConfig);
 
@@ -146,16 +136,10 @@ const setEventListeners = (formElement, validationConfig) => {
 
 export const enableValidation = (validationConfig) => {
 
-    // Object.keys(validationConfig).forEach(key => {
-    //     console.log(key + " - " + validationConfig[key]);
-    // })
-    // console.log(Object.keys(objSettingValidation));
-
     // Найдём все формы с указанным классом в DOM,
     // сделаем из них массив методом Array.from
     // const formList = Array.from(document.querySelectorAll('.popup__form'));
     const formList = Array.from(document.querySelectorAll(validationConfig.formSelector));
-    // console.log(formList);
 
     // Переберём полученную коллекцию
     formList.forEach((formElement) => {
@@ -165,12 +149,7 @@ export const enableValidation = (validationConfig) => {
     });
 };
 
-// включение валидации вызовом enableValidation
-// все настройки validationConfig передаются при вызове
-
 export const clearValidation = (profileForm, validationConfig) => {
-    // console.log(profileForm);
-
     // Находим все поля внутри формы,
     // сделаем из них массив методом Array.from
     const inputList = Array.from(profileForm.querySelectorAll(validationConfig.inputSelector));
@@ -183,7 +162,6 @@ export const clearValidation = (profileForm, validationConfig) => {
         // Внутри колбэка вызовем isValid,
         // передав ей форму и проверяемый элемент
         hideInputError(profileForm, inputElement, validationConfig)
-        // });
     });
 
     disableButton(buttonElement, validationConfig);
