@@ -45,6 +45,15 @@ const profileImage = document.querySelector('.profile__image');
 // Находим DOM-элемент подписи попапа с картинкой
 const popapImageCaption = popupTypeImage.querySelector('.popup__caption');
 
+const objFuncs = {
+    deleteCardFunc, 
+    likeCardFunc, 
+    clickCardImageFunc, 
+    openModal, 
+    setPutLike, 
+    setDeleteLike
+}
+
 //добавляем слушателя на кнопку edit
 profileEditButton.addEventListener('click', () => {
     // при каждом клике на кнопке редактирования полям инпута присвоить значения со страницы
@@ -132,8 +141,7 @@ function handleFormSubmitNewCard(evt) {
 
     setNewCard(tempObj)
         .then(json => {
-            placesList.prepend(addCard(json, deleteCardFunc, likeCardFunc, clickCardImageFunc, userId,
-                openModal, setPutLike, setDeleteLike));
+            placesList.prepend(addCard(json, objFuncs, userId));
             formElementNewCard.reset();
             // clearValidation(popupTypeNewCard.querySelector(validationConfig.formSelector), validationConfig);
             closeModal(popupTypeNewCard);
@@ -218,8 +226,7 @@ const renderingUserInfo = (response) => {
 //визуализируем response о карточках
 const renderingCardsInfo = (response) => { 
     response.forEach(cardObj => { 
-        placesList.append(addCard(cardObj, deleteCardFunc, likeCardFunc, clickCardImageFunc, userId,
-            openModal, setPutLike, setDeleteLike));
+        placesList.append(addCard(cardObj, objFuncs, userId));
     })
 }
 

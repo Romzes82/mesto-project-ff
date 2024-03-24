@@ -2,7 +2,7 @@
 const cardTemplate = document.querySelector('#card-template').content;
 
 // Функция создания карточки
-export function addCard(cardObj, deleteCardFunc, likeCardFunc, clickCardImageFunc, userId, openModal, setPutLike, setDeleteLike) {
+export function addCard(cardObj, funcsObj, userId) {
     const cardElement = cardTemplate.querySelector('.places__item').cloneNode(true);
     const cardImage = cardElement.querySelector('.card__image');
     const cardDeleteButton = cardElement.querySelector('.card__delete-button');
@@ -11,18 +11,18 @@ export function addCard(cardObj, deleteCardFunc, likeCardFunc, clickCardImageFun
     // наполняем содержимым
     cardImage.src = cardObj.link;
     cardImage.alt = cardObj.name;
-    cardImage.addEventListener('click', () => clickCardImageFunc(cardObj));
+    cardImage.addEventListener('click', () => funcsObj.clickCardImageFunc(cardObj));
 
     if (cardObj.owner._id === userId) { 
         cardDeleteButton.classList.remove('card__delete-button-hidden');
-        cardDeleteButton.addEventListener('click', deleteCardFunc(cardObj._id, openModal));
+        cardDeleteButton.addEventListener('click', funcsObj.deleteCardFunc(cardObj._id, funcsObj.openModal));
     }
 
     if (cardObj.likes.some(like => like._id === userId)) {
         cardLikeButton.classList.add('card__like-button_is-active');
     }
 
-    cardLikeButton.addEventListener('click', likeCardFunc(cardObj._id, setPutLike, setDeleteLike));
+    cardLikeButton.addEventListener('click', funcsObj.likeCardFunc(cardObj._id, funcsObj.setPutLike, funcsObj.setDeleteLike));
     cardElement.querySelector('.card__title').textContent = cardObj.name;
     cardElement.querySelector('.card__like-amount').textContent = cardObj.likes.length;
 
